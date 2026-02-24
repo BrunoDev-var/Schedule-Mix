@@ -1,257 +1,259 @@
-<!DOCTYPE html>
+
+# Archivo 1: index.html (Estructura principal)
+index_html = '''<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule I - Cookbook Oficial de Recetas</title>
+    <title>Schedule I Pro - Ultimate Mixing Station</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ESTILOS INLINE - Reemplazar con styles.css si lo prefieres */
         * { font-family: 'Inter', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        body {
-            background: #0a0a0f;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(63, 94, 251, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(252, 70, 107, 0.05) 0%, transparent 50%);
+        body { 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%); 
+            min-height: 100vh; 
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); 
         }
-        .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .glass-card { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
-        .glass-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        .glass-card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            border-color: rgba(99, 102, 241, 0.5); 
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25); 
         }
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .gradient-text { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
         }
-        .rank-badge {
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(234, 179, 8, 0.1) 100%);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            color: #facc15;
+        .profit-gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+        .tab-active { 
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%); 
+            border: 1px solid rgba(99, 102, 241, 0.5); 
+            color: white; 
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); 
         }
-        .verified-badge {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #4ade80;
+        .tab-inactive { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            color: rgba(255, 255, 255, 0.5); 
         }
-        .profit-high { color: #4ade80; }
-        .profit-mid { color: #60a5fa; }
-        .profit-low { color: #f87171; }
-        .ingredient-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            font-size: 1.2rem;
-        }
-        .step-arrow {
-            color: rgba(255,255,255,0.3);
-            font-size: 0.8rem;
-        }
-        .effect-tag {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #a5b4fc;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-        }
-        .filter-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background: rgba(99, 102, 241, 0.3);
-            border-color: rgba(99, 102, 241, 0.5);
-            color: white;
-        }
-        .recipe-card {
-            border-left: 4px solid;
-        }
-        .recipe-early { border-left-color: #22c55e; }
-        .recipe-mid { border-left-color: #3b82f6; }
-        .recipe-late { border-left-color: #a855f7; }
-        .recipe-premium { border-left-color: #f59e0b; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 4px; }
     </style>
-<base target="_blank">
 </head>
-<body class="text-gray-100 min-h-screen">
-    <header class="fixed top-0 w-full z-50 glass border-b border-white/10">
+<body class="text-gray-100 font-sans antialiased">
+    <!-- NAVEGACIÓN -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-book-open text-white text-lg"></i>
+                        <i class="fas fa-flask text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold gradient-text">Schedule I Cookbook</h1>
-                        <p class="text-xs text-gray-400">Recetas 100% Verificadas por la Comunidad</p>
+                        <h1 class="text-xl font-bold gradient-text">Schedule I Pro</h1>
+                        <p class="text-xs text-gray-400">Ultimate Mixing Station v3.0</p>
                     </div>
                 </div>
-                <div class="hidden md:flex items-center gap-4">
-                    <div class="text-xs text-gray-400">
-                        <i class="fas fa-check-circle text-green-400 mr-1"></i>
-                        <span id="total-recipes">17 recetas</span>
-                    </div>
+                <div class="hidden md:flex items-center gap-2">
+                    <button onclick="showSection('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-active" data-section="dashboard">
+                        <i class="fas fa-chart-pie mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showSection('recipes')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="recipes">
+                        <i class="fas fa-book mr-2"></i>Recetas <span class="ml-1 bg-indigo-500/30 px-2 py-0.5 rounded-full text-xs">52</span>
+                    </button>
+                    <button onclick="showSection('calculator')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="calculator">
+                        <i class="fas fa-calculator mr-2"></i>Calc
+                    </button>
+                    <button onclick="showSection('optimizer')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="optimizer">
+                        <i class="fas fa-robot mr-2"></i>Bot
+                    </button>
                 </div>
             </div>
         </div>
-    </header>
+    </nav>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div class="text-center mb-8 py-8">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Recetas Verificadas In-Game</h2>
-            <p class="text-gray-400 max-w-2xl mx-auto">
-                Cookbook oficial con recetas testeadas por la comunidad. Cada receta incluye el rango necesario, 
-                costo exacto, precio de venta y ganancia neta. Ordena los ingredientes exactamente como aparecen.
-            </p>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <button onclick="filterRecipes('all')" class="filter-btn active px-4 py-2 rounded-full text-sm font-medium" data-filter="all">Todas</button>
-            <button onclick="filterRecipes('early')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="early"><i class="fas fa-seedling mr-1"></i>Early Game</button>
-            <button onclick="filterRecipes('mid')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="mid"><i class="fas fa-flask mr-1"></i>Mid Game</button>
-            <button onclick="filterRecipes('late')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="late"><i class="fas fa-crown mr-1"></i>Late Game</button>
-            <button onclick="filterRecipes('meth')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="meth"><i class="fas fa-bolt mr-1"></i>Meth</button>
-            <button onclick="filterRecipes('cocaine')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="cocaine"><i class="fas fa-gem mr-1"></i>Cocaine</button>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-2xl font-bold text-green-400">$565</div>
-                <div class="text-xs text-gray-400">Mayor Ganancia</div>
+        
+        <!-- DASHBOARD -->
+        <section id="section-dashboard" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Mejor Ganancia</span>
+                        <i class="fas fa-crown text-yellow-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold profit-gold mono">$565</div>
+                    <div class="text-xs text-gray-500 mt-1">Cocaine MEGA</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Recetas</span>
+                        <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mono">52</div>
+                    <div class="text-xs text-gray-500 mt-1">100% verificadas</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Promedio</span>
+                        <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-indigo-400 mono">$142</div>
+                    <div class="text-xs text-gray-500 mt-1">Por receta</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Rangos</span>
+                        <i class="fas fa-layer-group text-purple-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-purple-400 mono">12</div>
+                    <div class="text-xs text-gray-500 mt-1">Desde Street Rat</div>
+                </div>
             </div>
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-2xl font-bold text-blue-400">288%</div>
-                <div class="text-xs text-gray-400">Mejor ROI</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <button onclick="showSection('recipes'); filterRecipes('early');" class="glass-card rounded-2xl p-6 text-left hover:border-green-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-seedling text-green-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Early Game</h3>
+                    <p class="text-sm text-gray-400">18 recetas Hoodlum I-V</p>
+                </button>
+                <button onclick="showSection('recipes'); filterRecipes('mid');" class="glass-card rounded-2xl p-6 text-left hover:border-blue-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-flask text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Mid Game</h3>
+                    <p class="text-sm text-gray-400">15 recetas Peddler I-V</p>
+                </button>
+                <button onclick="showSection('recipes'); filterRecipes('late');" class="glass-card rounded-2xl p-6 text-left hover:border-purple-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-crown text-purple-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Late Game</h3>
+                    <p class="text-sm text-gray-400">19 recetas Hustler I-III</p>
+                </button>
             </div>
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-2xl font-bold text-purple-400">$154</div>
-                <div class="text-xs text-gray-400">Ganancia Promedio</div>
+
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-lg font-semibold mb-4">Rentabilidad por Tipo</h3>
+                <canvas id="profitChart" height="100"></canvas>
             </div>
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-2xl font-bold text-yellow-400">17</div>
-                <div class="text-xs text-gray-400">Recetas Totales</div>
+        </section>
+
+        <!-- RECETAS -->
+        <section id="section-recipes" class="hidden space-y-6">
+            <div class="glass-card rounded-2xl p-6 sticky top-20 z-40">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Buscar receta, ingrediente o efecto..." 
+                               class="w-full pl-12 pr-4 py-3 rounded-xl bg-black/30 border border-white/10 focus:border-indigo-500 focus:outline-none transition-all"
+                               oninput="searchRecipes()">
+                    </div>
+                    <select id="rank-filter" onchange="applyFilters()" class="px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm">
+                        <option value="">Todos los rangos</option>
+                        <option value="Street Rat">Street Rat</option>
+                        <option value="Hoodlum">Hoodlum</option>
+                        <option value="Peddler">Peddler</option>
+                        <option value="Hustler">Hustler</option>
+                    </select>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <button onclick="filterRecipes('all')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" data-filter="all">Todas</button>
+                    <button onclick="filterRecipes('early')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="early">🌱 Early</button>
+                    <button onclick="filterRecipes('mid')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="mid">⚗️ Mid</button>
+                    <button onclick="filterRecipes('late')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="late">👑 Late</button>
+                    <button onclick="filterRecipes('weed')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="weed">🌿 Weed</button>
+                    <button onclick="filterRecipes('meth')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="meth">💎 Meth</button>
+                    <button onclick="filterRecipes('cocaine')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="cocaine">❄️ Coke</button>
+                </div>
             </div>
-        </div>
+            <div id="recipes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </section>
 
-        <div id="recipes-container" class="space-y-6"></div>
-
-        <div class="mt-12 text-center text-gray-500 text-sm">
-            <p>Datos verificados por la comunidad de Schedule I • Fuentes: PCGamesN, IGN, Shacknews</p>
-            <p class="mt-2">Recetas testeadas en versión Early Access • Sigue el orden de ingredientes exactamente</p>
-        </div>
-    </main>
-
-    <script>
-        const recipes = [
-            { id: 1, name: "OG Kush Profit Básico", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum I", rankIcon: "🔓", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2}], effects: ["Jennerising","Thought-Provoking","Energizing","Gingeritis"], cost: 36, sellPrice: 80, profit: 44, addiction: 40, difficulty: "Fácil", steps: 3 },
-            { id: 2, name: "OG Kush con Viagra", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Gasoline",icon:"⛽",price:5},{name:"Viagra",icon:"💙",price:4}], effects: ["Tropic Thunder","Toxic"], cost: 39, sellPrice: 55, profit: 16, addiction: 60, difficulty: "Fácil", steps: 2 },
-            { id: 3, name: "OG Kush Completo Early", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum V", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Viagra",icon:"💙",price:4}], effects: ["Anti-Gravity","Balding","Thought-Provoking","Calorie-Dense","Jennerising","Sneaky","Gingeritis","Tropic Thunder"], cost: 49, sellPrice: 136, profit: 87, addiction: 100, difficulty: "Media", steps: 7 },
-            { id: 4, name: "Sour Diesel Básico", category: "early", base: "Sour Diesel", baseIcon: "🍃", rank: "Street Rat IV", rankIcon: "✅", ingredients: [{name:"Sour Diesel",icon:"🍃",price:35},{name:"Cuke",icon:"🥒",price:2},{name:"Flu Medicine",icon:"🤧",price:5},{name:"Banana",icon:"🍌",price:2}], effects: ["Refreshing","Thought-Provoking","Sedating","Gingeritis"], cost: 44, sellPrice: 71, profit: 27, addiction: 50, difficulty: "Fácil", steps: 3 },
-            { id: 5, name: "Sour Diesel Completo", category: "early", base: "Sour Diesel", baseIcon: "🍃", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"Sour Diesel",icon:"🍃",price:35},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Refreshing","Thought-Provoking","Balding","Jennerising","Sneaky","Gingeritis","Calorie-Dense","Tropic Thunder"], cost: 54, sellPrice: 122, profit: 68, addiction: 100, difficulty: "Media", steps: 7 },
-            { id: 6, name: "Green Crack Rápido", category: "early", base: "Green Crack", baseIcon: "⚡", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"Green Crack",icon:"⚡",price:40},{name:"Viagra",icon:"💙",price:4},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Cyclopean","Tropic Thunder","Foggy"], cost: 51, sellPrice: 83, profit: 32, addiction: 68, difficulty: "Fácil", steps: 2 },
-            { id: 7, name: "Green Crack Completo", category: "early", base: "Green Crack", baseIcon: "⚡", rank: "Hoodlum V", rankIcon: "🔒", ingredients: [{name:"Green Crack",icon:"⚡",price:40},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Thought-Provoking","Gingeritis","Balding","Jennerising","Sneaky","Energizing","Calorie-Dense","Tropic Thunder"], cost: 61, sellPrice: 125, profit: 64, addiction: 100, difficulty: "Media", steps: 8 },
-            { id: 8, name: "Grandaddy Purple Óptimo", category: "early", base: "Grandaddy Purple", baseIcon: "🍇", rank: "Hoodlum IV", rankIcon: "🔒", ingredients: [{name:"Grandaddy Purple",icon:"🍇",price:45},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Sedating","Thought-Provoking","Balding","Jennerising","Sneaky","Gingeritis","Calorie-Dense","Tropic Thunder"], cost: 64, sellPrice: 126, profit: 62, addiction: 100, difficulty: "Media", steps: 7 },
-            { id: 9, name: "OG Kush Mejorado (Peddler)", category: "mid", base: "OG Kush", baseIcon: "🌿", rank: "Peddler V", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Gasoline",icon:"⛽",price:5},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Mega Bean",icon:"🫘",price:7},{name:"Battery",icon:"🔋",price:8},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2}], effects: ["Tropic Thunder","Anti-Gravity","Zombifying","Jennerising","Glowing","Cyclopean","Bright-Eyed","Thought-Provoking"], cost: 59, sellPrice: 171, profit: 112, addiction: 100, difficulty: "Media", steps: 7 },
-            { id: 10, name: "Meth Rápido (3 pasos)", category: "mid", base: "Meth", baseIcon: "💎", rank: "Peddler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Cuke",icon:"🥒",price:2},{name:"Viagra",icon:"💙",price:4},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Cyclopean","Tropic Thunder","Foggy"], cost: 93, sellPrice: 167, profit: 74, addiction: 68, difficulty: "Fácil", steps: 3 },
-            { id: 11, name: "Meth 4 Ingredientes", category: "mid", base: "Meth", baseIcon: "💎", rank: "Peddler V", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Zombifying","Cyclopean","Bright-Eyed","Foggy"], cost: 102, sellPrice: 203, profit: 101, addiction: 100, difficulty: "Media", steps: 4 },
-            { id: 12, name: "Shrooms Básico", category: "mid", base: "Shrooms", baseIcon: "🍄", rank: "Peddler I", rankIcon: "🔒", ingredients: [{name:"Shrooms",icon:"🍄",price:140},{name:"Addy",icon:"💉",price:9},{name:"Cuke",icon:"🥒",price:2},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Motor Oil",icon:"🛢️",price:6}], effects: ["Slippery","Schizophrenic","Thought-Provoking"], cost: 163, sellPrice: 116, profit: -47, addiction: 50, difficulty: "Fácil", steps: 4 },
-            { id: 13, name: "Meth GOD MIX (8 pasos)", category: "late", base: "Meth", baseIcon: "💎", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Foggy"], cost: 118, sellPrice: 340, profit: 222, addiction: 100, difficulty: "Difícil", steps: 8 },
-            { id: 14, name: "Meth GOD MIX V2", category: "late", base: "Meth", baseIcon: "💎", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Anti-Gravity","Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced"], cost: 124, sellPrice: 353, profit: 229, addiction: 100, difficulty: "Difícil", steps: 9 },
-            { id: 15, name: "Cocaine ULTIMATE", category: "late", base: "Cocaine", baseIcon: "❄️", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Cocaine",icon:"❄️",price:150},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Foggy"], cost: 188, sellPrice: 729, profit: 541, addiction: 100, difficulty: "Difícil", steps: 8 },
-            { id: 16, name: "Cocaine MEGA PROFIT", category: "late", base: "Cocaine", baseIcon: "❄️", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Cocaine",icon:"❄️",price:150},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Mega Bean",icon:"🫘",price:7},{name:"Battery",icon:"🔋",price:8},{name:"Energy Drink",icon:"🥤",price:6},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Horse Semen",icon:"🐴",price:9},{name:"Viagra",icon:"💙",price:4},{name:"Energy Drink",icon:"🥤",price:6},{name:"Mega Bean",icon:"🫘",price:7},{name:"Mouth Wash",icon:"🧴",price:4}], effects: ["Anti-Gravity","Glowing","Electrifying","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Shrinking"], cost: 212, sellPrice: 777, profit: 565, addiction: 100, difficulty: "Experto", steps: 12 },
-            { id: 17, name: "OG Kush LATE GAME", category: "late", base: "OG Kush", baseIcon: "🌿", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Horse Semen",icon:"🐴",price:9},{name:"Banana",icon:"🍌",price:2},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Energy Drink",icon:"🥤",price:6},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Iodine",icon:"🧪",price:8}], effects: ["Anti-Gravity","Shrinking","Thought-Provoking","Electrifying","Long Faced","Glowing","Zombifying"], cost: 100, sellPrice: 183, profit: 83, addiction: 100, difficulty: "Experto", steps: 14 }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderRecipes('all');
-        });
-
-        function renderRecipes(filter) {
-            const container = document.getElementById('recipes-container');
-            let filtered = filter === 'all' ? recipes : recipes.filter(r => r.category === filter || r.base.toLowerCase() === filter);
-            filtered.sort((a, b) => b.profit - a.profit);
-
-            container.innerHTML = filtered.map(recipe => {
-                const profitClass = recipe.profit >= 200 ? 'profit-high' : recipe.profit >= 100 ? 'profit-mid' : 'profit-low';
-                return `
-                    <div class="glass-card recipe-${recipe.category} rounded-2xl p-6 recipe-card">
-                        <div class="flex flex-col lg:flex-row lg:items-start gap-6">
-                            <div class="lg:w-1/4 space-y-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-2xl">${recipe.baseIcon}</span>
-                                    <h3 class="text-xl font-bold">${recipe.name}</h3>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="rank-badge px-3 py-1 rounded-full text-xs font-medium"><i class="fas fa-lock mr-1"></i>${recipe.rank}</span>
-                                    ${recipe.difficulty === 'Experto' ? '<span class="verified-badge px-2 py-1 rounded text-xs">EXPERTO</span>' : ''}
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 text-sm">
-                                    <div class="bg-white/5 rounded p-2"><div class="text-gray-400 text-xs">Costo</div><div class="font-mono">$${recipe.cost}</div></div>
-                                    <div class="bg-white/5 rounded p-2"><div class="text-gray-400 text-xs">Venta</div><div class="font-mono text-green-400">$${recipe.sellPrice}</div></div>
-                                    <div class="bg-white/5 rounded p-2 col-span-2"><div class="text-gray-400 text-xs">Ganancia</div><div class="font-mono text-xl ${profitClass}">$${recipe.profit}</div></div>
-                                </div>
-                                <div class="flex items-center gap-4 text-xs text-gray-400">
-                                    <span><i class="fas fa-fire mr-1 text-orange-400"></i>${recipe.addiction}% Adicción</span>
-                                    <span><i class="fas fa-list-ol mr-1 text-blue-400"></i>${recipe.steps} pasos</span>
-                                </div>
-                            </div>
-                            <div class="lg:w-2/4">
-                                <h4 class="text-sm font-medium text-gray-400 mb-3">Orden de ingredientes (IMPORTANTE):</h4>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    ${recipe.ingredients.map((ing, idx) => `
-                                        <div class="flex items-center gap-2">
-                                            <div class="ingredient-icon" title="${ing.name} ($${ing.price})">${ing.icon}</div>
-                                            ${idx < recipe.ingredients.length - 1 ? '<i class="fas fa-arrow-right step-arrow"></i>' : ''}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                <div class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                                    <p class="text-xs text-yellow-200"><i class="fas fa-exclamation-triangle mr-1"></i>Agrega los ingredientes EXACTAMENTE en este orden o la receta fallará.</p>
-                                </div>
-                            </div>
-                            <div class="lg:w-1/4">
-                                <h4 class="text-sm font-medium text-gray-400 mb-3">Efectos Finales:</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${recipe.effects.map(effect => `<span class="effect-tag">${effect}</span>`).join('')}
-                                </div>
-                                <div class="mt-4 pt-4 border-t border-white/10">
-                                    <button onclick="navigator.clipboard.writeText('${recipe.name}\n${recipe.ingredients.map(i => i.name).join(' → ')}\nGanancia: $${recipe.profit}')" class="w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-colors"><i class="fas fa-copy mr-2"></i>Copiar</button>
-                                </div>
-                            </div>
+        <!-- CALCULADORA -->
+        <section id="section-calculator" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">1. Base</h3>
+                        <div class="grid grid-cols-2 gap-2" id="calc-bases"></div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">2. Ingredientes</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2" id="calc-ingredients"></div>
+                        <button onclick="clearCalc()" class="mt-4 w-full py-2 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400 text-sm hover:bg-red-500/30 transition-all">Limpiar Todo</button>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Resultado</h3>
+                        <div id="calc-steps" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
+                            <p class="text-gray-500 text-center py-8">Selecciona una base</p>
                         </div>
                     </div>
-                `;
-            }).join('');
-        }
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div><div class="text-xs text-gray-400 mb-1">Costo</div><div class="text-xl font-bold text-red-400 mono" id="calc-cost">$0</div></div>
+                            <div><div class="text-xs text-gray-400 mb-1">Venta</div><div class="text-xl font-bold text-green-400 mono" id="calc-sell">$0</div></div>
+                            <div><div class="text-xs text-gray-400 mb-1">Ganancia</div><div class="text-xl font-bold profit-gold mono" id="calc-profit">$0</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        function filterRecipes(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
-            renderRecipes(category);
-        }
+        <!-- OPTIMIZADOR -->
+        <section id="section-optimizer" class="hidden space-y-6">
+            <div class="glass-card rounded-2xl p-8 text-center max-w-2xl mx-auto">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-robot text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-4">Optimizador Inteligente</h2>
+                <p class="text-gray-400 mb-6">¿Cuánto dinero tienes? Te recomendaré la mejor receta.</p>
+                <div class="flex gap-4 max-w-md mx-auto">
+                    <input type="number" id="budget-input" placeholder="Tu presupuesto..." class="flex-1 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-center text-lg focus:border-indigo-500 focus:outline-none">
+                    <button onclick="optimizeBudget()" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all">Calcular</button>
+                </div>
+                <div id="optimizer-result" class="mt-8 hidden text-left"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPTS - Pega aquí el contenido de recipes.js y app.js -->
+    <script>
+        // ===== PEGA AQUÍ EL CONTENIDO DE recipes.js =====
+    </script>
+    <script>
+        // ===== PEGA AQUÍ EL CONTENIDO DE app.js =====
     </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/kimi/output/01_index.html', 'w', encoding='utf-8') as f:
+    f.write(index_html)
+
+print("✅ Archivo 1/3 creado: 01_index.html")
+print("   Este es el archivo principal con la estructura HTML")
+print("   Incluye estilos inline básicos (puedes separarlos a styles.css)")
