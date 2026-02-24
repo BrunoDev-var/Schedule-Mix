@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule I Pro - Ultimate Mixing Station</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ESTILOS INLINE - Reemplazar con styles.css si lo prefieres */
+        * { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        body { 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%); 
+            min-height: 100vh; 
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); 
+        }
+        .glass-card { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .glass-card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            border-color: rgba(99, 102, 241, 0.5); 
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25); 
+        }
+        .gradient-text { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        .profit-gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+        .tab-active { 
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%); 
+            border: 1px solid rgba(99, 102, 241, 0.5); 
+            color: white; 
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); 
+        }
+        .tab-inactive { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            color: rgba(255, 255, 255, 0.5); 
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-100 font-sans antialiased">
+    <!-- NAVEGACIÓN -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-flask text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">Schedule I Pro</h1>
+                        <p class="text-xs text-gray-400">Ultimate Mixing Station v3.0</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-2">
+                    <button onclick="showSection('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-active" data-section="dashboard">
+                        <i class="fas fa-chart-pie mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showSection('recipes')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="recipes">
+                        <i class="fas fa-book mr-2"></i>Recetas <span class="ml-1 bg-indigo-500/30 px-2 py-0.5 rounded-full text-xs">52</span>
+                    </button>
+                    <button onclick="showSection('calculator')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="calculator">
+                        <i class="fas fa-calculator mr-2"></i>Calc
+                    </button>
+                    <button onclick="showSection('optimizer')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="optimizer">
+                        <i class="fas fa-robot mr-2"></i>Bot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+
+        <!-- DASHBOARD -->
+        <section id="section-dashboard" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Mejor Ganancia</span>
+                        <i class="fas fa-crown text-yellow-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold profit-gold mono">$565</div>
+                    <div class="text-xs text-gray-500 mt-1">Cocaine MEGA</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Recetas</span>
+                        <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mono">52</div>
+                    <div class="text-xs text-gray-500 mt-1">100% verificadas</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Promedio</span>
+                        <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-indigo-400 mono">$142</div>
+                    <div class="text-xs text-gray-500 mt-1">Por receta</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Rangos</span>
+                        <i class="fas fa-layer-group text-purple-400 text-xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-purple-400 mono">12</div>
+                    <div class="text-xs text-gray-500 mt-1">Desde Street Rat</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <button onclick="showSection('recipes'); filterRecipes('early');" class="glass-card rounded-2xl p-6 text-left hover:border-green-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-seedling text-green-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Early Game</h3>
+                    <p class="text-sm text-gray-400">18 recetas Hoodlum I-V</p>
+                </button>
+                <button onclick="showSection('recipes'); filterRecipes('mid');" class="glass-card rounded-2xl p-6 text-left hover:border-blue-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-flask text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Mid Game</h3>
+                    <p class="text-sm text-gray-400">15 recetas Peddler I-V</p>
+                </button>
+                <button onclick="showSection('recipes'); filterRecipes('late');" class="glass-card rounded-2xl p-6 text-left hover:border-purple-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-crown text-purple-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Late Game</h3>
+                    <p class="text-sm text-gray-400">19 recetas Hustler I-III</p>
+                </button>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-lg font-semibold mb-4">Rentabilidad por Tipo</h3>
+                <canvas id="profitChart" height="100"></canvas>
+            </div>
+        </section>
+
+        <!-- RECETAS -->
+        <section id="section-recipes" class="hidden space-y-6">
+            <div class="glass-card rounded-2xl p-6 sticky top-20 z-40">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Buscar receta, ingrediente o efecto..." 
+                               class="w-full pl-12 pr-4 py-3 rounded-xl bg-black/30 border border-white/10 focus:border-indigo-500 focus:outline-none transition-all"
+                               oninput="searchRecipes()">
+                    </div>
+                    <select id="rank-filter" onchange="applyFilters()" class="px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm">
+                        <option value="">Todos los rangos</option>
+                        <option value="Street Rat">Street Rat</option>
+                        <option value="Hoodlum">Hoodlum</option>
+                        <option value="Peddler">Peddler</option>
+                        <option value="Hustler">Hustler</option>
+                    </select>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <button onclick="filterRecipes('all')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" data-filter="all">Todas</button>
+                    <button onclick="filterRecipes('early')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="early">🌱 Early</button>
+                    <button onclick="filterRecipes('mid')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="mid">⚗️ Mid</button>
+                    <button onclick="filterRecipes('late')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="late">👑 Late</button>
+                    <button onclick="filterRecipes('weed')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="weed">🌿 Weed</button>
+                    <button onclick="filterRecipes('meth')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="meth">💎 Meth</button>
+                    <button onclick="filterRecipes('cocaine')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="cocaine">❄️ Coke</button>
+                </div>
+            </div>
+            <div id="recipes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        </section>
+
+        <!-- CALCULADORA -->
+        <section id="section-calculator" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">1. Base</h3>
+                        <div class="grid grid-cols-2 gap-2" id="calc-bases"></div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">2. Ingredientes</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2" id="calc-ingredients"></div>
+                        <button onclick="clearCalc()" class="mt-4 w-full py-2 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400 text-sm hover:bg-red-500/30 transition-all">Limpiar Todo</button>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Resultado</h3>
+                        <div id="calc-steps" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
+                            <p class="text-gray-500 text-center py-8">Selecciona una base</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div><div class="text-xs text-gray-400 mb-1">Costo</div><div class="text-xl font-bold text-red-400 mono" id="calc-cost">$0</div></div>
+                            <div><div class="text-xs text-gray-400 mb-1">Venta</div><div class="text-xl font-bold text-green-400 mono" id="calc-sell">$0</div></div>
+                            <div><div class="text-xs text-gray-400 mb-1">Ganancia</div><div class="text-xl font-bold profit-gold mono" id="calc-profit">$0</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OPTIMIZADOR -->
+        <section id="section-optimizer" class="hidden space-y-6">
+            <div class="glass-card rounded-2xl p-8 text-center max-w-2xl mx-auto">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-robot text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-4">Optimizador Inteligente</h2>
+                <p class="text-gray-400 mb-6">¿Cuánto dinero tienes? Te recomendaré la mejor receta.</p>
+                <div class="flex gap-4 max-w-md mx-auto">
+                    <input type="number" id="budget-input" placeholder="Tu presupuesto..." class="flex-1 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-center text-lg focus:border-indigo-500 focus:outline-none">
+                    <button onclick="optimizeBudget()" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all">Calcular</button>
+                </div>
+                <div id="optimizer-result" class="mt-8 hidden text-left"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPTS - Pega aquí el contenido de recipes.js y app.js -->
+    <script>
+        // ===== PEGA AQUÍ EL CONTENIDO DE recipes.js =====
+    </script>
+    <script>
+        // ===== PEGA AQUÍ EL CONTENIDO DE app.js =====
+    </script>
+</body>
+</html>
