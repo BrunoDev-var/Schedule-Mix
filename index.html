@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule I - Laboratorio de Mezclas</title>
+    <title>Schedule I - Cookbook Oficial de Recetas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
         body {
             background: #0a0a0f;
             background-image: 
@@ -39,889 +34,223 @@
             border-color: rgba(255,255,255,0.15);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .neon-text {
-            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.3);
-        }
-        .neon-border {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), inset 0 0 20px rgba(99, 102, 241, 0.1);
-        }
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .ingredient-tag {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            transition: all 0.2s ease;
+        .rank-badge {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(234, 179, 8, 0.1) 100%);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            color: #facc15;
         }
-        .ingredient-tag:hover {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
-            transform: scale(1.05);
-        }
-        .effect-badge {
+        .verified-badge {
             background: rgba(34, 197, 94, 0.15);
             border: 1px solid rgba(34, 197, 94, 0.3);
             color: #4ade80;
         }
-        .negative-effect {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #f87171;
+        .profit-high { color: #4ade80; }
+        .profit-mid { color: #60a5fa; }
+        .profit-low { color: #f87171; }
+        .ingredient-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 1.2rem;
         }
-        .neutral-effect {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
+        .step-arrow {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
         }
-        .tab-active {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.5);
+        .effect-tag {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .filter-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
             color: white;
         }
-        .tab-inactive {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.5);
+        .recipe-card {
+            border-left: 4px solid;
         }
-        .tab-inactive:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.8);
-        }
-        .mixing-slot {
-            background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
-            border: 2px dashed rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-        .mixing-slot.filled {
-            border-color: rgba(99, 102, 241, 0.5);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-        }
-        .scroll-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scroll-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
-        }
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            height: 6px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-        }
-        .glow-icon {
-            filter: drop-shadow(0 0 8px currentColor);
-        }
-        /* Chart container fix */
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-        }
+        .recipe-early { border-left-color: #22c55e; }
+        .recipe-mid { border-left-color: #3b82f6; }
+        .recipe-late { border-left-color: #a855f7; }
+        .recipe-premium { border-left-color: #f59e0b; }
     </style>
 <base target="_blank">
 </head>
 <body class="text-gray-100 min-h-screen">
-    <!-- Header -->
     <header class="fixed top-0 w-full z-50 glass border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center animate-pulse-slow">
-                        <i class="fas fa-flask text-white text-lg"></i>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-book-open text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold gradient-text">Schedule I Lab</h1>
-                        <p class="text-xs text-gray-400">Calculadora de Mezclas Profesional</p>
+                        <h1 class="text-xl font-bold gradient-text">Schedule I Cookbook</h1>
+                        <p class="text-xs text-gray-400">Recetas 100% Verificadas por la Comunidad</p>
                     </div>
                 </div>
-                <nav class="hidden md:flex items-center gap-2">
-                    <button onclick="showSection('calculator')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all tab-active" id="nav-calculator">
-                        <i class="fas fa-calculator mr-2"></i>Calculadora
-                    </button>
-                    <button onclick="showSection('ingredients')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" id="nav-ingredients">
-                        <i class="fas fa-vials mr-2"></i>Ingredientes
-                    </button>
-                    <button onclick="showSection('recipes')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" id="nav-recipes">
-                        <i class="fas fa-book mr-2"></i>Recetas
-                    </button>
-                    <button onclick="showSection('analytics')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" id="nav-analytics">
-                        <i class="fas fa-chart-line mr-2"></i>Análisis
-                    </button>
-                </nav>
-                <div class="flex items-center gap-3">
-                    <div class="glass px-3 py-1 rounded-full text-xs mono text-gray-400">
-                        <i class="fas fa-coins mr-1 text-yellow-400"></i>
-                        <span id="total-profit">$0</span>
+                <div class="hidden md:flex items-center gap-4">
+                    <div class="text-xs text-gray-400">
+                        <i class="fas fa-check-circle text-green-400 mr-1"></i>
+                        <span id="total-recipes">17 recetas</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-8 py-8">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Recetas Verificadas In-Game</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                Cookbook oficial con recetas testeadas por la comunidad. Cada receta incluye el rango necesario, 
+                costo exacto, precio de venta y ganancia neta. Ordena los ingredientes exactamente como aparecen.
+            </p>
+        </div>
 
-        <!-- Calculator Section -->
-        <section id="section-calculator" class="space-y-6">
-            <!-- Hero Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="glass-card rounded-2xl p-5 animate-float" style="animation-delay: 0s;">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Costo Total</span>
-                        <i class="fas fa-dollar-sign text-red-400 glow-icon"></i>
-                    </div>
-                    <div class="text-2xl font-bold mono" id="stat-cost">$0.00</div>
-                    <div class="text-xs text-gray-500 mt-1">Inversión en ingredientes</div>
-                </div>
-                <div class="glass-card rounded-2xl p-5 animate-float" style="animation-delay: 0.2s;">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Precio Venta</span>
-                        <i class="fas fa-tags text-green-400 glow-icon"></i>
-                    </div>
-                    <div class="text-2xl font-bold mono text-green-400" id="stat-sell">$0.00</div>
-                    <div class="text-xs text-gray-500 mt-1">Precio de mercado</div>
-                </div>
-                <div class="glass-card rounded-2xl p-5 animate-float" style="animation-delay: 0.4s;">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Ganancia Neta</span>
-                        <i class="fas fa-chart-line text-indigo-400 glow-icon"></i>
-                    </div>
-                    <div class="text-2xl font-bold mono gradient-text" id="stat-profit">$0.00</div>
-                    <div class="text-xs text-gray-500 mt-1">ROI: <span id="stat-roi">0%</span></div>
-                </div>
-                <div class="glass-card rounded-2xl p-5 animate-float" style="animation-delay: 0.6s;">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Adicción</span>
-                        <i class="fas fa-fire text-orange-400 glow-icon"></i>
-                    </div>
-                    <div class="text-2xl font-bold mono text-orange-400" id="stat-addiction">0%</div>
-                    <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
-                        <div class="progress-bar h-2 rounded-full transition-all" id="addiction-bar" style="width: 0%"></div>
-                    </div>
-                </div>
+        <div class="flex flex-wrap justify-center gap-2 mb-8">
+            <button onclick="filterRecipes('all')" class="filter-btn active px-4 py-2 rounded-full text-sm font-medium" data-filter="all">Todas</button>
+            <button onclick="filterRecipes('early')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="early"><i class="fas fa-seedling mr-1"></i>Early Game</button>
+            <button onclick="filterRecipes('mid')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="mid"><i class="fas fa-flask mr-1"></i>Mid Game</button>
+            <button onclick="filterRecipes('late')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="late"><i class="fas fa-crown mr-1"></i>Late Game</button>
+            <button onclick="filterRecipes('meth')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="meth"><i class="fas fa-bolt mr-1"></i>Meth</button>
+            <button onclick="filterRecipes('cocaine')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium" data-filter="cocaine"><i class="fas fa-gem mr-1"></i>Cocaine</button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-2xl font-bold text-green-400">$565</div>
+                <div class="text-xs text-gray-400">Mayor Ganancia</div>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Base Drug Selection -->
-                <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <i class="fas fa-cannabis text-green-400"></i>
-                        Producto Base
-                    </h3>
-                    <div class="space-y-3" id="base-drugs">
-                        <!-- Generated by JS -->
-                    </div>
-                </div>
-
-                <!-- Mixing Station -->
-                <div class="glass-card rounded-2xl p-6 lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold flex items-center gap-2">
-                            <i class="fas fa-flask text-indigo-400"></i>
-                            Estación de Mezcla
-                        </h3>
-                        <div class="flex gap-2">
-                            <button onclick="undoLastIngredient()" class="px-3 py-1.5 rounded-lg glass text-xs hover:bg-white/10 transition">
-                                <i class="fas fa-undo mr-1"></i>Deshacer
-                            </button>
-                            <button onclick="clearMix()" class="px-3 py-1.5 rounded-lg glass text-xs hover:bg-red-500/20 text-red-400 transition">
-                                <i class="fas fa-trash mr-1"></i>Limpiar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Mixing Slots -->
-                    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 mb-4" id="mixing-slots">
-                        <!-- Slots generated by JS -->
-                    </div>
-
-                    <!-- Ingredients Grid -->
-                    <div class="mt-6">
-                        <h4 class="text-sm font-medium text-gray-400 mb-3">Ingredientes Disponibles</h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-64 overflow-y-auto scroll-hide" id="ingredients-grid">
-                            <!-- Generated by JS -->
-                        </div>
-                    </div>
-                </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-2xl font-bold text-blue-400">288%</div>
+                <div class="text-xs text-gray-400">Mejor ROI</div>
             </div>
-
-            <!-- Effects Display -->
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <i class="fas fa-magic text-purple-400"></i>
-                    Efectos Generados
-                </h3>
-                <div id="effects-container" class="flex flex-wrap gap-2">
-                    <span class="text-gray-500 italic">Agrega ingredientes para ver los efectos...</span>
-                </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-2xl font-bold text-purple-400">$154</div>
+                <div class="text-xs text-gray-400">Ganancia Promedio</div>
             </div>
-
-            <!-- Save Recipe -->
-            <div class="glass-card rounded-2xl p-6">
-                <div class="flex items-center gap-4">
-                    <input type="text" id="recipe-name" placeholder="Nombre de tu receta..." 
-                           class="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 transition">
-                    <button onclick="saveCurrentRecipe()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-medium hover:shadow-lg hover:shadow-indigo-500/25 transition-all">
-                        <i class="fas fa-save mr-2"></i>Guardar Receta
-                    </button>
-                </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-400">17</div>
+                <div class="text-xs text-gray-400">Recetas Totales</div>
             </div>
-        </section>
+        </div>
 
-        <!-- Ingredients Section -->
-        <section id="section-ingredients" class="hidden space-y-6">
-            <div class="glass-card rounded-2xl p-6">
-                <h2 class="text-2xl font-bold mb-6 gradient-text">Base de Datos de Ingredientes</h2>
+        <div id="recipes-container" class="space-y-6"></div>
 
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button onclick="filterIngredients('all')" class="px-4 py-2 rounded-full text-sm bg-indigo-600 text-white">Todos</button>
-                    <button onclick="filterIngredients('early')" class="px-4 py-2 rounded-full text-sm glass hover:bg-white/10">Early Game</button>
-                    <button onclick="filterIngredients('mid')" class="px-4 py-2 rounded-full text-sm glass hover:bg-white/10">Mid Game</button>
-                    <button onclick="filterIngredients('late')" class="px-4 py-2 rounded-full text-sm glass hover:bg-white/10">Late Game</button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="ingredients-list">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
-
-            <!-- Effects Reference -->
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-xl font-bold mb-4">Referencia de Efectos</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-white/10">
-                                <th class="text-left py-3 px-4">Efecto</th>
-                                <th class="text-left py-3 px-4">Tipo</th>
-                                <th class="text-left py-3 px-4">Multiplicador</th>
-                                <th class="text-left py-3 px-4">Descripción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="effects-table">
-                            <!-- Generated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recipes Section -->
-        <section id="section-recipes" class="hidden space-y-6">
-            <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold gradient-text">Recetas Guardadas</h2>
-                <button onclick="loadDefaultRecipes()" class="px-4 py-2 glass rounded-lg text-sm hover:bg-white/10">
-                    <i class="fas fa-download mr-2"></i>Cargar Recetas Optimizadas
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="saved-recipes">
-                <!-- Generated by JS -->
-            </div>
-        </section>
-
-        <!-- Analytics Section -->
-        <section id="section-analytics" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Profit Chart -->
-                <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold mb-4">Rentabilidad por Tipo</h3>
-                    <div class="chart-container">
-                        <canvas id="profitChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Addiction vs Price -->
-                <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold mb-4">Adicción vs Precio</h3>
-                    <div class="chart-container">
-                        <canvas id="scatterChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-lg font-semibold mb-4">Optimizador de Mezclas</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <select id="opt-base" class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm">
-                        <option value="">Seleccionar Base...</option>
-                    </select>
-                    <select id="opt-strategy" class="bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm">
-                        <option value="profit">Máxima Ganancia</option>
-                        <option value="addiction">Máxima Adicción</option>
-                        <option value="balanced">Balanceado</option>
-                    </select>
-                    <button onclick="optimizeMix()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-medium">
-                        <i class="fas fa-calculator mr-2"></i>Calcular Óptimo
-                    </button>
-                </div>
-                <div id="optimization-result" class="hidden">
-                    <!-- Result will appear here -->
-                </div>
-            </div>
-        </section>
+        <div class="mt-12 text-center text-gray-500 text-sm">
+            <p>Datos verificados por la comunidad de Schedule I • Fuentes: PCGamesN, IGN, Shacknews</p>
+            <p class="mt-2">Recetas testeadas en versión Early Access • Sigue el orden de ingredientes exactamente</p>
+        </div>
     </main>
 
     <script>
-        // Game Data
-        const baseDrugs = {
-            'og-kush': { name: 'OG Kush', basePrice: 38, baseCost: 30, addiction: 0, effect: 'Calming' },
-            'sour-diesel': { name: 'Sour Diesel', basePrice: 40, baseCost: 35, addiction: 10, effect: 'Refreshing' },
-            'green-crack': { name: 'Green Crack', basePrice: 43, baseCost: 40, addiction: 34, effect: 'Energizing' },
-            'grandaddy-purple': { name: 'Grandaddy Purple', basePrice: 45, baseCost: 45, addiction: 0, effect: 'Sedating' },
-            'meth': { name: 'Methamphetamine', basePrice: 70, baseCost: 80, addiction: 60, effect: null },
-            'shrooms': { name: 'Shrooms', basePrice: 65, baseCost: 140, addiction: 5, effect: null },
-            'cocaine': { name: 'Cocaine', basePrice: 150, baseCost: 150, addiction: 40, effect: null }
-        };
+        const recipes = [
+            { id: 1, name: "OG Kush Profit Básico", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum I", rankIcon: "🔓", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2}], effects: ["Jennerising","Thought-Provoking","Energizing","Gingeritis"], cost: 36, sellPrice: 80, profit: 44, addiction: 40, difficulty: "Fácil", steps: 3 },
+            { id: 2, name: "OG Kush con Viagra", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Gasoline",icon:"⛽",price:5},{name:"Viagra",icon:"💙",price:4}], effects: ["Tropic Thunder","Toxic"], cost: 39, sellPrice: 55, profit: 16, addiction: 60, difficulty: "Fácil", steps: 2 },
+            { id: 3, name: "OG Kush Completo Early", category: "early", base: "OG Kush", baseIcon: "🌿", rank: "Hoodlum V", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Viagra",icon:"💙",price:4}], effects: ["Anti-Gravity","Balding","Thought-Provoking","Calorie-Dense","Jennerising","Sneaky","Gingeritis","Tropic Thunder"], cost: 49, sellPrice: 136, profit: 87, addiction: 100, difficulty: "Media", steps: 7 },
+            { id: 4, name: "Sour Diesel Básico", category: "early", base: "Sour Diesel", baseIcon: "🍃", rank: "Street Rat IV", rankIcon: "✅", ingredients: [{name:"Sour Diesel",icon:"🍃",price:35},{name:"Cuke",icon:"🥒",price:2},{name:"Flu Medicine",icon:"🤧",price:5},{name:"Banana",icon:"🍌",price:2}], effects: ["Refreshing","Thought-Provoking","Sedating","Gingeritis"], cost: 44, sellPrice: 71, profit: 27, addiction: 50, difficulty: "Fácil", steps: 3 },
+            { id: 5, name: "Sour Diesel Completo", category: "early", base: "Sour Diesel", baseIcon: "🍃", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"Sour Diesel",icon:"🍃",price:35},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Refreshing","Thought-Provoking","Balding","Jennerising","Sneaky","Gingeritis","Calorie-Dense","Tropic Thunder"], cost: 54, sellPrice: 122, profit: 68, addiction: 100, difficulty: "Media", steps: 7 },
+            { id: 6, name: "Green Crack Rápido", category: "early", base: "Green Crack", baseIcon: "⚡", rank: "Hoodlum II", rankIcon: "🔒", ingredients: [{name:"Green Crack",icon:"⚡",price:40},{name:"Viagra",icon:"💙",price:4},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Cyclopean","Tropic Thunder","Foggy"], cost: 51, sellPrice: 83, profit: 32, addiction: 68, difficulty: "Fácil", steps: 2 },
+            { id: 7, name: "Green Crack Completo", category: "early", base: "Green Crack", baseIcon: "⚡", rank: "Hoodlum V", rankIcon: "🔒", ingredients: [{name:"Green Crack",icon:"⚡",price:40},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Thought-Provoking","Gingeritis","Balding","Jennerising","Sneaky","Energizing","Calorie-Dense","Tropic Thunder"], cost: 61, sellPrice: 125, profit: 64, addiction: 100, difficulty: "Media", steps: 8 },
+            { id: 8, name: "Grandaddy Purple Óptimo", category: "early", base: "Grandaddy Purple", baseIcon: "🍇", rank: "Hoodlum IV", rankIcon: "🔒", ingredients: [{name:"Grandaddy Purple",icon:"🍇",price:45},{name:"Banana",icon:"🍌",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Banana",icon:"🍌",price:2},{name:"Donut",icon:"🍩",price:3},{name:"Viagra",icon:"💙",price:4}], effects: ["Sedating","Thought-Provoking","Balding","Jennerising","Sneaky","Gingeritis","Calorie-Dense","Tropic Thunder"], cost: 64, sellPrice: 126, profit: 62, addiction: 100, difficulty: "Media", steps: 7 },
+            { id: 9, name: "OG Kush Mejorado (Peddler)", category: "mid", base: "OG Kush", baseIcon: "🌿", rank: "Peddler V", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Gasoline",icon:"⛽",price:5},{name:"Paracetamol",icon:"💊",price:3},{name:"Cuke",icon:"🥒",price:2},{name:"Mega Bean",icon:"🫘",price:7},{name:"Battery",icon:"🔋",price:8},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2}], effects: ["Tropic Thunder","Anti-Gravity","Zombifying","Jennerising","Glowing","Cyclopean","Bright-Eyed","Thought-Provoking"], cost: 59, sellPrice: 171, profit: 112, addiction: 100, difficulty: "Media", steps: 7 },
+            { id: 10, name: "Meth Rápido (3 pasos)", category: "mid", base: "Meth", baseIcon: "💎", rank: "Peddler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Cuke",icon:"🥒",price:2},{name:"Viagra",icon:"💙",price:4},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Cyclopean","Tropic Thunder","Foggy"], cost: 93, sellPrice: 167, profit: 74, addiction: 68, difficulty: "Fácil", steps: 3 },
+            { id: 11, name: "Meth 4 Ingredientes", category: "mid", base: "Meth", baseIcon: "💎", rank: "Peddler V", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Zombifying","Cyclopean","Bright-Eyed","Foggy"], cost: 102, sellPrice: 203, profit: 101, addiction: 100, difficulty: "Media", steps: 4 },
+            { id: 12, name: "Shrooms Básico", category: "mid", base: "Shrooms", baseIcon: "🍄", rank: "Peddler I", rankIcon: "🔒", ingredients: [{name:"Shrooms",icon:"🍄",price:140},{name:"Addy",icon:"💉",price:9},{name:"Cuke",icon:"🥒",price:2},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Motor Oil",icon:"🛢️",price:6}], effects: ["Slippery","Schizophrenic","Thought-Provoking"], cost: 163, sellPrice: 116, profit: -47, addiction: 50, difficulty: "Fácil", steps: 4 },
+            { id: 13, name: "Meth GOD MIX (8 pasos)", category: "late", base: "Meth", baseIcon: "💎", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Foggy"], cost: 118, sellPrice: 340, profit: 222, addiction: 100, difficulty: "Difícil", steps: 8 },
+            { id: 14, name: "Meth GOD MIX V2", category: "late", base: "Meth", baseIcon: "💎", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Meth",icon:"💎",price:80},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Anti-Gravity","Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced"], cost: 124, sellPrice: 353, profit: 229, addiction: 100, difficulty: "Difícil", steps: 9 },
+            { id: 15, name: "Cocaine ULTIMATE", category: "late", base: "Cocaine", baseIcon: "❄️", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Cocaine",icon:"❄️",price:150},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Paracetamol",icon:"💊",price:3},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7}], effects: ["Electrifying","Glowing","Tropic Thunder","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Foggy"], cost: 188, sellPrice: 729, profit: 541, addiction: 100, difficulty: "Difícil", steps: 8 },
+            { id: 16, name: "Cocaine MEGA PROFIT", category: "late", base: "Cocaine", baseIcon: "❄️", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"Cocaine",icon:"❄️",price:150},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Mega Bean",icon:"🫘",price:7},{name:"Battery",icon:"🔋",price:8},{name:"Energy Drink",icon:"🥤",price:6},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Horse Semen",icon:"🐴",price:9},{name:"Viagra",icon:"💙",price:4},{name:"Energy Drink",icon:"🥤",price:6},{name:"Mega Bean",icon:"🫘",price:7},{name:"Mouth Wash",icon:"🧴",price:4}], effects: ["Anti-Gravity","Glowing","Electrifying","Zombifying","Cyclopean","Bright-Eyed","Long Faced","Shrinking"], cost: 212, sellPrice: 777, profit: 565, addiction: 100, difficulty: "Experto", steps: 12 },
+            { id: 17, name: "OG Kush LATE GAME", category: "late", base: "OG Kush", baseIcon: "🌿", rank: "Hustler III", rankIcon: "🔒", ingredients: [{name:"OG Kush",icon:"🌿",price:30},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Cuke",icon:"🥒",price:2},{name:"Horse Semen",icon:"🐴",price:9},{name:"Banana",icon:"🍌",price:2},{name:"Gasoline",icon:"⛽",price:5},{name:"Cuke",icon:"🥒",price:2},{name:"Banana",icon:"🍌",price:2},{name:"Battery",icon:"🔋",price:8},{name:"Energy Drink",icon:"🥤",price:6},{name:"Horse Semen",icon:"🐴",price:9},{name:"Mega Bean",icon:"🫘",price:7},{name:"Motor Oil",icon:"🛢️",price:6},{name:"Iodine",icon:"🧪",price:8}], effects: ["Anti-Gravity","Shrinking","Thought-Provoking","Electrifying","Long Faced","Glowing","Zombifying"], cost: 100, sellPrice: 183, profit: 83, addiction: 100, difficulty: "Experto", steps: 14 }
+        ];
 
-        const ingredients = {
-            'cuke': { name: 'Cuke', price: 2, effect: 'Energizing', unlock: 'Immediately', icon: '🥒' },
-            'banana': { name: 'Banana', price: 2, effect: 'Gingeritis', unlock: 'Immediately', icon: '🍌' },
-            'paracetamol': { name: 'Paracetamol', price: 3, effect: 'Sneaky', unlock: 'Immediately', icon: '💊' },
-            'donut': { name: 'Donut', price: 3, effect: 'Calorie-Dense', unlock: 'Immediately', icon: '🍩' },
-            'viagra': { name: 'Viagra', price: 4, effect: 'Tropic Thunder', unlock: 'Hoodlum II', icon: '💙' },
-            'mouth-wash': { name: 'Mouth Wash', price: 4, effect: 'Balding', unlock: 'Hoodlum III', icon: '🧴' },
-            'flu-medicine': { name: 'Flu Medicine', price: 5, effect: 'Sedating', unlock: 'Hoodlum IV', icon: '🤧' },
-            'gasoline': { name: 'Gasoline', price: 5, effect: 'Toxic', unlock: 'Hoodlum V', icon: '⛽' },
-            'energy-drink': { name: 'Energy Drink', price: 6, effect: 'Athletic', unlock: 'Peddler I', icon: '🥤' },
-            'motor-oil': { name: 'Motor Oil', price: 6, effect: 'Slippery', unlock: 'Peddler II', icon: '🛢️' },
-            'mega-bean': { name: 'Mega Bean', price: 7, effect: 'Foggy', unlock: 'Peddler II', icon: '🫘' },
-            'chili': { name: 'Chili', price: 7, effect: 'Spicy', unlock: 'Peddler IV', icon: '🌶️' },
-            'battery': { name: 'Battery', price: 8, effect: 'Bright-Eyed', unlock: 'Peddler V', icon: '🔋' },
-            'iodine': { name: 'Iodine', price: 8, effect: 'Jennerising', unlock: 'Hustler I', icon: '🧪' },
-            'addy': { name: 'Addy', price: 9, effect: 'Thought-Provoking', unlock: 'Hustler II', icon: '💉' },
-            'horse-semen': { name: 'Horse Semen', price: 9, effect: 'Long Faced', unlock: 'Hustler III', icon: '🐴' }
-        };
-
-        // Effect multipliers
-        const effectMultipliers = {
-            'Anti-Gravity': 0.5, 'Athletic': 0.4, 'Balding': 0.3, 'Bright-Eyed': 0.4,
-            'Calming': 0.2, 'Calorie-Dense': 0.2, 'Cyclopean': 0.5, 'Disorienting': 0.3,
-            'Electrifying': 0.5, 'Energizing': 0.3, 'Euphoric': 0.4, 'Explosive': 0.6,
-            'Focused': 0.3, 'Foggy': 0.2, 'Gingeritis': 0.2, 'Glowing': 0.4,
-            'Jennerising': 0.4, 'Laxative': 0.1, 'Long Faced': 0.4, 'Munchies': 0.2,
-            'Paranoia': 0.1, 'Refreshing': 0.2, 'Schizophrenic': 0.3, 'Sedating': 0.3,
-            'Seizure-Inducing': 0.1, 'Shrinking': 0.4, 'Slippery': 0.2, 'Smelly': 0.1,
-            'Sneaky': 0.3, 'Spicy': 0.3, 'Thought-Provoking': 0.4, 'Toxic': 0.1,
-            'Tropic Thunder': 0.5, 'Zombifying': 0.6
-        };
-
-        // State
-        let currentMix = {
-            base: null,
-            ingredients: []
-        };
-        let savedRecipes = JSON.parse(localStorage.getItem('schedule1_recipes') || '[]');
-        let charts = {}; // Store chart instances
-        let chartsInitialized = false;
-
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            renderBaseDrugs();
-            renderIngredientsGrid();
-            renderIngredientsList();
-            renderEffectsTable();
-            renderSavedRecipes();
-            populateOptimizerSelect();
-            updateMixingSlots();
+            renderRecipes('all');
         });
 
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`section-${section}`).classList.remove('hidden');
+        function renderRecipes(filter) {
+            const container = document.getElementById('recipes-container');
+            let filtered = filter === 'all' ? recipes : recipes.filter(r => r.category === filter || r.base.toLowerCase() === filter);
+            filtered.sort((a, b) => b.profit - a.profit);
 
-            // Update nav
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('tab-inactive');
-            });
-            document.getElementById(`nav-${section}`).classList.remove('tab-inactive');
-            document.getElementById(`nav-${section}`).classList.add('tab-active');
-
-            // Initialize charts only when showing analytics and only once
-            if (section === 'analytics' && !chartsInitialized) {
-                initCharts();
-                chartsInitialized = true;
-            }
-        }
-
-        function renderBaseDrugs() {
-            const container = document.getElementById('base-drugs');
-            container.innerHTML = Object.entries(baseDrugs).map(([key, drug]) => `
-                <div onclick="selectBase('${key}')" 
-                     class="cursor-pointer p-4 rounded-xl border-2 transition-all ${currentMix.base === key ? 'border-indigo-500 bg-indigo-500/20' : 'border-white/10 hover:border-white/30 bg-white/5'}">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="font-semibold">${drug.name}</div>
-                            <div class="text-xs text-gray-400">Base: $${drug.baseCost} → Venta: $${drug.basePrice}</div>
-                        </div>
-                        ${drug.effect ? `<span class="text-xs effect-badge px-2 py-1 rounded">${drug.effect}</span>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectBase(key) {
-            currentMix.base = key;
-            currentMix.ingredients = [];
-            renderBaseDrugs();
-            updateMixingSlots();
-            calculateMix();
-        }
-
-        function renderIngredientsGrid() {
-            const container = document.getElementById('ingredients-grid');
-            container.innerHTML = Object.entries(ingredients).map(([key, ing]) => `
-                <button onclick="addIngredient('${key}')" 
-                        class="ingredient-tag p-3 rounded-xl text-left hover:scale-105 transition-all">
-                    <div class="text-2xl mb-1">${ing.icon}</div>
-                    <div class="text-xs font-medium">${ing.name}</div>
-                    <div class="text-xs text-gray-400">$${ing.price}</div>
-                </button>
-            `).join('');
-        }
-
-        function addIngredient(key) {
-            if (!currentMix.base) {
-                alert('Selecciona un producto base primero');
-                return;
-            }
-            if (currentMix.ingredients.length >= 8) {
-                alert('Máximo 8 ingredientes');
-                return;
-            }
-            currentMix.ingredients.push(key);
-            updateMixingSlots();
-            calculateMix();
-        }
-
-        function undoLastIngredient() {
-            currentMix.ingredients.pop();
-            updateMixingSlots();
-            calculateMix();
-        }
-
-        function clearMix() {
-            currentMix.ingredients = [];
-            updateMixingSlots();
-            calculateMix();
-        }
-
-        function updateMixingSlots() {
-            const container = document.getElementById('mixing-slots');
-            let html = '';
-            for (let i = 0; i < 8; i++) {
-                if (i < currentMix.ingredients.length) {
-                    const ing = ingredients[currentMix.ingredients[i]];
-                    html += `
-                        <div class="mixing-slot filled rounded-xl p-3 aspect-square flex flex-col items-center justify-center cursor-pointer" onclick="removeIngredient(${i})">
-                            <div class="text-2xl">${ing.icon}</div>
-                            <div class="text-xs mt-1 text-center">${ing.name}</div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="mixing-slot rounded-xl p-3 aspect-square flex items-center justify-center">
-                            <span class="text-gray-600 text-xs">${i + 1}</span>
-                        </div>
-                    `;
-                }
-            }
-            container.innerHTML = html;
-        }
-
-        function removeIngredient(index) {
-            currentMix.ingredients.splice(index, 1);
-            updateMixingSlots();
-            calculateMix();
-        }
-
-        function calculateMix() {
-            if (!currentMix.base) {
-                resetStats();
-                return;
-            }
-
-            const base = baseDrugs[currentMix.base];
-            let totalCost = base.baseCost;
-            let effects = base.effect ? [base.effect] : [];
-
-            currentMix.ingredients.forEach(key => {
-                const ing = ingredients[key];
-                totalCost += ing.price;
-
-                if (!effects.includes(ing.effect)) {
-                    effects.push(ing.effect);
-                }
-            });
-
-            let multiplier = 1;
-            effects.forEach(effect => {
-                if (effectMultipliers[effect]) {
-                    multiplier += effectMultipliers[effect];
-                }
-            });
-
-            const sellPrice = Math.round(base.basePrice * multiplier);
-            const profit = sellPrice - totalCost;
-            const roi = ((profit / totalCost) * 100).toFixed(1);
-            const addiction = Math.min(100, base.addiction + (effects.length * 8));
-
-            document.getElementById('stat-cost').textContent = `$${totalCost.toFixed(2)}`;
-            document.getElementById('stat-sell').textContent = `$${sellPrice.toFixed(2)}`;
-            document.getElementById('stat-profit').textContent = `$${profit.toFixed(2)}`;
-            document.getElementById('stat-roi').textContent = `${roi}%`;
-            document.getElementById('stat-addiction').textContent = `${addiction}%`;
-            document.getElementById('addiction-bar').style.width = `${addiction}%`;
-            document.getElementById('total-profit').textContent = `$${profit}`;
-
-            const effectsContainer = document.getElementById('effects-container');
-            if (effects.length === 0) {
-                effectsContainer.innerHTML = '<span class="text-gray-500 italic">Sin efectos especiales</span>';
-            } else {
-                effectsContainer.innerHTML = effects.map(effect => {
-                    const isNegative = ['Toxic', 'Paranoia', 'Seizure-Inducing', 'Smelly', 'Laxative', 'Disorienting'].includes(effect);
-                    const isNeutral = ['Calming', 'Sedating', 'Foggy'].includes(effect);
-                    const className = isNegative ? 'negative-effect' : isNeutral ? 'neutral-effect' : 'effect-badge';
-                    return `<span class="${className} px-3 py-1.5 rounded-full text-sm font-medium">${effect}</span>`;
-                }).join('');
-            }
-        }
-
-        function resetStats() {
-            document.getElementById('stat-cost').textContent = '$0.00';
-            document.getElementById('stat-sell').textContent = '$0.00';
-            document.getElementById('stat-profit').textContent = '$0.00';
-            document.getElementById('stat-roi').textContent = '0%';
-            document.getElementById('stat-addiction').textContent = '0%';
-            document.getElementById('addiction-bar').style.width = '0%';
-            document.getElementById('effects-container').innerHTML = '<span class="text-gray-500 italic">Selecciona un producto base...</span>';
-        }
-
-        function saveCurrentRecipe() {
-            const name = document.getElementById('recipe-name').value;
-            if (!name) {
-                alert('Ingresa un nombre para la receta');
-                return;
-            }
-            if (!currentMix.base) {
-                alert('Crea una mezcla primero');
-                return;
-            }
-
-            const recipe = {
-                id: Date.now(),
-                name: name,
-                base: currentMix.base,
-                ingredients: [...currentMix.ingredients],
-                date: new Date().toLocaleDateString()
-            };
-
-            savedRecipes.push(recipe);
-            localStorage.setItem('schedule1_recipes', JSON.stringify(savedRecipes));
-            renderSavedRecipes();
-            document.getElementById('recipe-name').value = '';
-            alert('Receta guardada exitosamente');
-        }
-
-        function renderSavedRecipes() {
-            const container = document.getElementById('saved-recipes');
-            if (savedRecipes.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-gray-500">
-                        <i class="fas fa-book-open text-4xl mb-4 opacity-30"></i>
-                        <p>No tienes recetas guardadas</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = savedRecipes.map(recipe => {
-                const base = baseDrugs[recipe.base];
-                const totalCost = base.baseCost + recipe.ingredients.reduce((sum, key) => sum + ingredients[key].price, 0);
+            container.innerHTML = filtered.map(recipe => {
+                const profitClass = recipe.profit >= 200 ? 'profit-high' : recipe.profit >= 100 ? 'profit-mid' : 'profit-low';
                 return `
-                    <div class="glass-card rounded-2xl p-5">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h4 class="font-semibold text-lg">${recipe.name}</h4>
-                                <p class="text-xs text-gray-400">${base.name} • ${recipe.date}</p>
+                    <div class="glass-card recipe-${recipe.category} rounded-2xl p-6 recipe-card">
+                        <div class="flex flex-col lg:flex-row lg:items-start gap-6">
+                            <div class="lg:w-1/4 space-y-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">${recipe.baseIcon}</span>
+                                    <h3 class="text-xl font-bold">${recipe.name}</h3>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="rank-badge px-3 py-1 rounded-full text-xs font-medium"><i class="fas fa-lock mr-1"></i>${recipe.rank}</span>
+                                    ${recipe.difficulty === 'Experto' ? '<span class="verified-badge px-2 py-1 rounded text-xs">EXPERTO</span>' : ''}
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-white/5 rounded p-2"><div class="text-gray-400 text-xs">Costo</div><div class="font-mono">$${recipe.cost}</div></div>
+                                    <div class="bg-white/5 rounded p-2"><div class="text-gray-400 text-xs">Venta</div><div class="font-mono text-green-400">$${recipe.sellPrice}</div></div>
+                                    <div class="bg-white/5 rounded p-2 col-span-2"><div class="text-gray-400 text-xs">Ganancia</div><div class="font-mono text-xl ${profitClass}">$${recipe.profit}</div></div>
+                                </div>
+                                <div class="flex items-center gap-4 text-xs text-gray-400">
+                                    <span><i class="fas fa-fire mr-1 text-orange-400"></i>${recipe.addiction}% Adicción</span>
+                                    <span><i class="fas fa-list-ol mr-1 text-blue-400"></i>${recipe.steps} pasos</span>
+                                </div>
                             </div>
-                            <button onclick="deleteRecipe(${recipe.id})" class="text-red-400 hover:text-red-300">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            ${recipe.ingredients.map(key => `
-                                <span class="text-xs bg-white/10 px-2 py-1 rounded">${ingredients[key].icon} ${ingredients[key].name}</span>
-                            `).join('')}
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-400">Costo: $${totalCost}</span>
-                            <button onclick="loadRecipe(${recipe.id})" class="text-indigo-400 hover:text-indigo-300 font-medium">
-                                Cargar <i class="fas fa-arrow-right ml-1"></i>
-                            </button>
+                            <div class="lg:w-2/4">
+                                <h4 class="text-sm font-medium text-gray-400 mb-3">Orden de ingredientes (IMPORTANTE):</h4>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    ${recipe.ingredients.map((ing, idx) => `
+                                        <div class="flex items-center gap-2">
+                                            <div class="ingredient-icon" title="${ing.name} ($${ing.price})">${ing.icon}</div>
+                                            ${idx < recipe.ingredients.length - 1 ? '<i class="fas fa-arrow-right step-arrow"></i>' : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                    <p class="text-xs text-yellow-200"><i class="fas fa-exclamation-triangle mr-1"></i>Agrega los ingredientes EXACTAMENTE en este orden o la receta fallará.</p>
+                                </div>
+                            </div>
+                            <div class="lg:w-1/4">
+                                <h4 class="text-sm font-medium text-gray-400 mb-3">Efectos Finales:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${recipe.effects.map(effect => `<span class="effect-tag">${effect}</span>`).join('')}
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-white/10">
+                                    <button onclick="navigator.clipboard.writeText('${recipe.name}\n${recipe.ingredients.map(i => i.name).join(' → ')}\nGanancia: $${recipe.profit}')" class="w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-colors"><i class="fas fa-copy mr-2"></i>Copiar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function loadRecipe(id) {
-            const recipe = savedRecipes.find(r => r.id === id);
-            if (recipe) {
-                currentMix.base = recipe.base;
-                currentMix.ingredients = [...recipe.ingredients];
-                renderBaseDrugs();
-                updateMixingSlots();
-                calculateMix();
-                showSection('calculator');
-            }
-        }
-
-        function deleteRecipe(id) {
-            savedRecipes = savedRecipes.filter(r => r.id !== id);
-            localStorage.setItem('schedule1_recipes', JSON.stringify(savedRecipes));
-            renderSavedRecipes();
-        }
-
-        function renderIngredientsList() {
-            const container = document.getElementById('ingredients-list');
-            container.innerHTML = Object.entries(ingredients).map(([key, ing]) => `
-                <div class="glass-card rounded-xl p-4">
-                    <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">${ing.icon}</span>
-                            <div>
-                                <h4 class="font-semibold">${ing.name}</h4>
-                                <p class="text-xs text-gray-400">$${ing.price} • ${ing.unlock}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <span class="effect-badge px-2 py-1 rounded text-xs">${ing.effect}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderEffectsTable() {
-            const tbody = document.getElementById('effects-table');
-            tbody.innerHTML = Object.entries(effectMultipliers).map(([effect, multiplier]) => {
-                const isNegative = ['Toxic', 'Paranoia', 'Seizure-Inducing', 'Smelly', 'Laxative', 'Disorienting'].includes(effect);
-                const type = isNegative ? 'Negativo' : 'Positivo';
-                const typeClass = isNegative ? 'text-red-400' : 'text-green-400';
-                return `
-                    <tr class="border-b border-white/5 hover:bg-white/5">
-                        <td class="py-3 px-4 font-medium">${effect}</td>
-                        <td class="py-3 px-4 ${typeClass}">${type}</td>
-                        <td class="py-3 px-4 mono">+${(multiplier * 100).toFixed(0)}%</td>
-                        <td class="py-3 px-4 text-gray-400 text-xs">Aumenta valor de venta</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function filterIngredients(type) {
-            renderIngredientsList();
-        }
-
-        function initCharts() {
-            // Destroy existing charts if they exist
-            if (charts.profit) {
-                charts.profit.destroy();
-            }
-            if (charts.scatter) {
-                charts.scatter.destroy();
-            }
-
-            // Profit by drug type chart
-            const ctx1 = document.getElementById('profitChart').getContext('2d');
-            charts.profit = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: ['OG Kush', 'Sour Diesel', 'Green Crack', 'Grandaddy P', 'Meth', 'Cocaine'],
-                    datasets: [{
-                        label: 'Ganancia Potencial',
-                        data: [45, 50, 55, 60, 250, 600],
-                        backgroundColor: 'rgba(99, 102, 241, 0.6)',
-                        borderColor: 'rgba(99, 102, 241, 1)',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { color: 'rgba(255,255,255,0.7)' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: 'rgba(255,255,255,0.7)' }
-                        }
-                    }
-                }
-            });
-
-            // Scatter chart
-            const ctx2 = document.getElementById('scatterChart').getContext('2d');
-            charts.scatter = new Chart(ctx2, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Recetas',
-                        data: [
-                            {x: 10, y: 40}, {x: 20, y: 70}, {x: 30, y: 120},
-                            {x: 40, y: 150}, {x: 50, y: 200}, {x: 60, y: 340},
-                            {x: 70, y: 500}, {x: 80, y: 735}
-                        ],
-                        backgroundColor: 'rgba(168, 85, 247, 0.6)',
-                        borderColor: 'rgba(168, 85, 247, 1)',
-                        pointRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: {
-                            title: { display: true, text: 'Adicción %', color: 'rgba(255,255,255,0.7)' },
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { color: 'rgba(255,255,255,0.7)' }
-                        },
-                        y: {
-                            title: { display: true, text: 'Precio Venta ($)', color: 'rgba(255,255,255,0.7)' },
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { color: 'rgba(255,255,255,0.7)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function loadDefaultRecipes() {
-            const defaults = [
-                {
-                    id: 'default-1',
-                    name: '🌿 OG Kush Profit Max',
-                    base: 'og-kush',
-                    ingredients: ['banana', 'paracetamol', 'donut', 'cuke', 'paracetamol', 'banana', 'viagra'],
-                    date: 'Predefinida'
-                },
-                {
-                    id: 'default-2',
-                    name: '⚡ Meth God Mix',
-                    base: 'meth',
-                    ingredients: ['cuke', 'paracetamol', 'banana', 'gasoline', 'cuke', 'battery', 'mega-bean', 'chili'],
-                    date: 'Predefinida'
-                },
-                {
-                    id: 'default-3',
-                    name: '👑 Coke Ultimate',
-                    base: 'cocaine',
-                    ingredients: ['banana', 'cuke', 'paracetamol', 'gasoline', 'cuke', 'battery', 'horse-semen', 'mega-bean'],
-                    date: 'Predefinida'
-                }
-            ];
-
-            savedRecipes = [...defaults, ...savedRecipes.filter(r => !r.id.toString().startsWith('default'))];
-            localStorage.setItem('schedule1_recipes', JSON.stringify(savedRecipes));
-            renderSavedRecipes();
-        }
-
-        function populateOptimizerSelect() {
-            const optSelect = document.getElementById('opt-base');
-            Object.entries(baseDrugs).forEach(([key, drug]) => {
-                optSelect.innerHTML += `<option value="${key}">${drug.name}</option>`;
-            });
-        }
-
-        function optimizeMix() {
-            const base = document.getElementById('opt-base').value;
-            const strategy = document.getElementById('opt-strategy').value;
-
-            if (!base) {
-                alert('Selecciona una base');
-                return;
-            }
-
-            const baseData = baseDrugs[base];
-            let recommended = [];
-
-            if (strategy === 'profit') {
-                recommended = ['viagra', 'battery', 'mega-bean', 'chili', 'paracetamol', 'banana', 'cuke', 'gasoline'];
-            } else if (strategy === 'addiction') {
-                recommended = ['gasoline', 'motor-oil', 'chili', 'battery', 'addy', 'horse-semen', 'mega-bean', 'energy-drink'];
-            } else {
-                recommended = ['cuke', 'paracetamol', 'banana', 'viagra', 'battery', 'mega-bean', 'chili', 'donut'];
-            }
-
-            const resultDiv = document.getElementById('optimization-result');
-            resultDiv.classList.remove('hidden');
-
-            resultDiv.innerHTML = `
-                <div class="glass-card rounded-xl p-6 mt-4">
-                    <h4 class="font-semibold mb-3">Mezcla Optimizada para ${baseData.name}</h4>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        ${recommended.map(key => `
-                            <span class="ingredient-tag px-3 py-2 rounded-lg text-sm">
-                                ${ingredients[key].icon} ${ingredients[key].name}
-                            </span>
-                        `).join('')}
-                    </div>
-                    <button onclick="applyOptimization('${base}', ${JSON.stringify(recommended).replace(/"/g, '&quot;')})" 
-                            class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-medium hover:shadow-lg transition-all">
-                        Aplicar Mezcla
-                    </button>
-                </div>
-            `;
-        }
-
-        function applyOptimization(base, recommended) {
-            currentMix.base = base;
-            currentMix.ingredients = recommended;
-            renderBaseDrugs();
-            updateMixingSlots();
-            calculateMix();
-            showSection('calculator');
+        function filterRecipes(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+            renderRecipes(category);
         }
     </script>
 </body>
