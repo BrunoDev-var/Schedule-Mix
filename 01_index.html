@@ -9,79 +9,311 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ESTILOS INLINE - Reemplazar con styles.css si lo prefieres */
         * { font-family: 'Inter', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
+        
         body { 
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%); 
-            min-height: 100vh; 
+            background: #050508;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .glow-1 { top: -200px; left: -200px; background: #6366f1; animation-delay: 0s; }
+        .glow-2 { bottom: -200px; right: -200px; background: #a855f7; animation-delay: -10s; }
+        .glow-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ec4899; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
+            background: rgba(20, 20, 25, 0.7); 
             backdrop-filter: blur(20px); 
             border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
         }
+
         .glass-card { 
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); 
+            background: linear-gradient(135deg, rgba(30,30,35,0.8) 0%, rgba(20,20,25,0.6) 100%); 
             backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.08); 
+            border: 1px solid rgba(255,255,255,0.06); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative;
+            overflow: hidden;
         }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
         .glass-card:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            border-color: rgba(99, 102, 241, 0.5); 
-            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25); 
+            transform: translateY(-4px) scale(1.01); 
+            border-color: rgba(99, 102, 241, 0.3); 
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.2); 
         }
+
         .gradient-text { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             background-clip: text; 
         }
-        .profit-gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
-        .tab-active { 
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%); 
-            border: 1px solid rgba(99, 102, 241, 0.5); 
-            color: white; 
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); 
+
+        .profit-gold { 
+            color: #fbbf24; 
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); 
         }
+
+        .tab-active { 
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%); 
+            border: 1px solid rgba(99, 102, 241, 0.4); 
+            color: white; 
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); 
+        }
+
         .tab-inactive { 
             background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
             color: rgba(255, 255, 255, 0.5); 
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 4px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 3px; }
+
+        .recipe-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ingredient-tag {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .stat-counter {
+            animation: countUp 0.5s ease-out;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .difficulty-easy { color: #4ade80; border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.1); }
+        .difficulty-medium { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.1); }
+        .difficulty-hard { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.1); }
+        .difficulty-expert { color: #a78bfa; border-color: rgba(167, 139, 250, 0.3); background: rgba(167, 139, 250, 0.1); }
+
+        .type-weed { border-left: 3px solid #22c55e; }
+        .type-meth { border-left: 3px solid #3b82f6; }
+        .type-cocaine { border-left: 3px solid #eab308; }
+        .type-shrooms { border-left: 3px solid #a855f7; }
+
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+        .btn-shine:hover::after {
+            animation: shine 0.5s ease-in-out;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .tooltip {
+            position: relative;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 50;
+            margin-bottom: 8px;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .effect-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rank-badge {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(234, 179, 8, 0.05));
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            color: #fbbf24;
+        }
+
+        /* Custom range slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body class="text-gray-100 font-sans antialiased">
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
     <!-- NAVEGACIÓN -->
     <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-flask text-white text-lg"></i>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative overflow-hidden">
+                        <div class="pulse-ring absolute inset-0"></div>
+                        <i class="fas fa-flask text-white text-lg relative z-10"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold gradient-text">Schedule I Pro</h1>
-                        <p class="text-xs text-gray-400">Ultimate Mixing Station v3.0</p>
+                        <h1 class="text-xl font-bold gradient-text tracking-tight">Schedule I Pro</h1>
+                        <p class="text-xs text-gray-500 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            Ultimate Mixing Station v4.0
+                        </p>
                     </div>
                 </div>
-                <div class="hidden md:flex items-center gap-2">
-                    <button onclick="showSection('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-active" data-section="dashboard">
-                        <i class="fas fa-chart-pie mr-2"></i>Dashboard
+                
+                <div class="hidden md:flex items-center gap-1 bg-black/20 p-1 rounded-xl">
+                    <button onclick="showSection('dashboard')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-active flex items-center gap-2" data-section="dashboard">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
                     </button>
-                    <button onclick="showSection('recipes')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="recipes">
-                        <i class="fas fa-book mr-2"></i>Recetas <span class="ml-1 bg-indigo-500/30 px-2 py-0.5 rounded-full text-xs">52</span>
+                    <button onclick="showSection('recipes')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive flex items-center gap-2" data-section="recipes">
+                        <i class="fas fa-book"></i>
+                        <span>Recetas</span>
+                        <span class="ml-1 bg-indigo-500/30 px-2 py-0.5 rounded-full text-xs font-mono">52</span>
                     </button>
-                    <button onclick="showSection('calculator')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="calculator">
-                        <i class="fas fa-calculator mr-2"></i>Calc
+                    <button onclick="showSection('calculator')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive flex items-center gap-2" data-section="calculator">
+                        <i class="fas fa-calculator"></i>
+                        <span>Calculadora</span>
                     </button>
-                    <button onclick="showSection('optimizer')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive" data-section="optimizer">
-                        <i class="fas fa-robot mr-2"></i>Bot
+                    <button onclick="showSection('optimizer')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive flex items-center gap-2" data-section="optimizer">
+                        <i class="fas fa-robot"></i>
+                        <span>Bot</span>
+                    </button>
+                    <button onclick="showSection('lab')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all tab-inactive flex items-center gap-2" data-section="lab">
+                        <i class="fas fa-vial"></i>
+                        <span>Laboratorio</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all tooltip" data-tooltip="Cambiar tema">
+                        <i class="fas fa-moon text-gray-400"></i>
+                    </button>
+                    <button onclick="exportData()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all tooltip" data-tooltip="Exportar datos">
+                        <i class="fas fa-download text-gray-400"></i>
                     </button>
                 </div>
             </div>
@@ -89,132 +321,360 @@
     </nav>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <main class="pt-24 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
 
         <!-- DASHBOARD -->
         <section id="section-dashboard" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Mejor Ganancia</span>
-                        <i class="fas fa-crown text-yellow-400 text-xl"></i>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl group-hover:bg-yellow-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-2 relative z-10">
+                        <span class="text-gray-400 text-sm font-medium">Mejor Ganancia</span>
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                            <i class="fas fa-crown text-yellow-400 text-xl"></i>
+                        </div>
                     </div>
-                    <div class="text-3xl font-bold profit-gold mono">$565</div>
-                    <div class="text-xs text-gray-500 mt-1">Cocaine MEGA</div>
-                </div>
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Recetas</span>
-                        <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                    <div class="text-3xl font-bold profit-gold mono stat-counter" id="best-profit">$565</div>
+                    <div class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                        Cocaine MEGA
                     </div>
-                    <div class="text-3xl font-bold text-white mono">52</div>
-                    <div class="text-xs text-gray-500 mt-1">100% verificadas</div>
                 </div>
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Promedio</span>
-                        <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl group-hover:bg-green-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-2 relative z-10">
+                        <span class="text-gray-400 text-sm font-medium">Recetas Verificadas</span>
+                        <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                        </div>
                     </div>
-                    <div class="text-3xl font-bold text-indigo-400 mono">$142</div>
-                    <div class="text-xs text-gray-500 mt-1">Por receta</div>
+                    <div class="text-3xl font-bold text-white mono stat-counter" id="total-recipes">52</div>
+                    <div class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        100% testeadas
+                    </div>
                 </div>
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Rangos</span>
-                        <i class="fas fa-layer-group text-purple-400 text-xl"></i>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-2 relative z-10">
+                        <span class="text-gray-400 text-sm font-medium">Ganancia Promedio</span>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-bold text-indigo-400 mono stat-counter" id="avg-profit">$142</div>
+                    <div class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                        Por receta
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-2 relative z-10">
+                        <span class="text-gray-400 text-sm font-medium">Rangos Disponibles</span>
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <i class="fas fa-layer-group text-purple-400 text-xl"></i>
+                        </div>
                     </div>
                     <div class="text-3xl font-bold text-purple-400 mono">12</div>
-                    <div class="text-xs text-gray-500 mt-1">Desde Street Rat</div>
+                    <div class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                        Desde Street Rat
+                    </div>
                 </div>
             </div>
 
+            <!-- Quick Access -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <button onclick="showSection('recipes'); filterRecipes('early');" class="glass-card rounded-2xl p-6 text-left hover:border-green-500/50 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-seedling text-green-400 text-xl"></i>
+                <button onclick="showSection('recipes'); filterRecipes('early');" class="glass-card rounded-2xl p-6 text-left hover:border-green-500/50 transition-all group btn-shine">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/10 flex items-center justify-center border border-green-500/20 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-seedling text-green-400 text-2xl"></i>
+                        </div>
+                        <span class="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">18 recetas</span>
                     </div>
-                    <h3 class="text-lg font-semibold mb-1">Early Game</h3>
-                    <p class="text-sm text-gray-400">18 recetas Hoodlum I-V</p>
+                    <h3 class="text-lg font-semibold mb-1 group-hover:text-green-400 transition-colors">Early Game</h3>
+                    <p class="text-sm text-gray-400 mb-3">Hoodlum I-V • OG Kush, Sour Diesel</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="fas fa-arrow-right text-green-500"></i>
+                        <span>Ver recetas</span>
+                    </div>
                 </button>
-                <button onclick="showSection('recipes'); filterRecipes('mid');" class="glass-card rounded-2xl p-6 text-left hover:border-blue-500/50 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-flask text-blue-400 text-xl"></i>
+
+                <button onclick="showSection('recipes'); filterRecipes('mid');" class="glass-card rounded-2xl p-6 text-left hover:border-blue-500/50 transition-all group btn-shine">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-flask text-blue-400 text-2xl"></i>
+                        </div>
+                        <span class="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full border border-blue-500/20">15 recetas</span>
                     </div>
-                    <h3 class="text-lg font-semibold mb-1">Mid Game</h3>
-                    <p class="text-sm text-gray-400">15 recetas Peddler I-V</p>
+                    <h3 class="text-lg font-semibold mb-1 group-hover:text-blue-400 transition-colors">Mid Game</h3>
+                    <p class="text-sm text-gray-400 mb-3">Peddler I-V • Meth, Shrooms</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="fas fa-arrow-right text-blue-500"></i>
+                        <span>Ver recetas</span>
+                    </div>
                 </button>
-                <button onclick="showSection('recipes'); filterRecipes('late');" class="glass-card rounded-2xl p-6 text-left hover:border-purple-500/50 transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-crown text-purple-400 text-xl"></i>
+
+                <button onclick="showSection('recipes'); filterRecipes('late');" class="glass-card rounded-2xl p-6 text-left hover:border-purple-500/50 transition-all group btn-shine">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-crown text-purple-400 text-2xl"></i>
+                        </div>
+                        <span class="text-xs text-purple-400 bg-purple-500/10 px-2 py-1 rounded-full border border-purple-500/20">19 recetas</span>
                     </div>
-                    <h3 class="text-lg font-semibold mb-1">Late Game</h3>
-                    <p class="text-sm text-gray-400">19 recetas Hustler I-III</p>
+                    <h3 class="text-lg font-semibold mb-1 group-hover:text-purple-400 transition-colors">Late Game</h3>
+                    <p class="text-sm text-gray-400 mb-3">Hustler I-III • Cocaine Premium</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <i class="fas fa-arrow-right text-purple-500"></i>
+                        <span>Ver recetas</span>
+                    </div>
                 </button>
             </div>
 
+            <!-- Charts & Analytics -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold">Rentabilidad por Producto</h3>
+                            <p class="text-sm text-gray-400">Comparativa de ganancias máximas</p>
+                        </div>
+                        <select class="bg-black/30 border border-white/10 rounded-lg px-3 py-1 text-sm focus:outline-none focus:border-indigo-500">
+                            <option>Todas las recetas</option>
+                            <option>Solo favoritas</option>
+                            <option>Por rango</option>
+                        </select>
+                    </div>
+                    <canvas id="profitChart" height="120"></canvas>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Top Efectos</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs">1</span>
+                                    <span class="text-sm">Anti-Gravity</span>
+                                </div>
+                                <span class="text-xs text-gray-400">+54%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs">2</span>
+                                    <span class="text-sm">Zombifying</span>
+                                </div>
+                                <span class="text-xs text-gray-400">+58%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs">3</span>
+                                    <span class="text-sm">Cyclopean</span>
+                                </div>
+                                <span class="text-xs text-gray-400">+56%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs">4</span>
+                                    <span class="text-sm">Glowing</span>
+                                </div>
+                                <span class="text-xs text-gray-400">+48%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-lightbulb text-yellow-400"></i>
+                            <span class="font-semibold text-sm">Pro Tip</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Las recetas con <span class="text-indigo-400">8 efectos</span> maximizan la adicción al 100%, permitiéndote cobrar precios premium a clientes habituales.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
             <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-lg font-semibold mb-4">Rentabilidad por Tipo</h3>
-                <canvas id="profitChart" height="100"></canvas>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Actividad Reciente</h3>
+                    <button class="text-sm text-indigo-400 hover:text-indigo-300">Ver todo</button>
+                </div>
+                <div class="space-y-3" id="recent-activity">
+                    <!-- Se llena con JS -->
+                </div>
             </div>
         </section>
 
         <!-- RECETAS -->
         <section id="section-recipes" class="hidden space-y-6">
-            <div class="glass-card rounded-2xl p-6 sticky top-20 z-40">
-                <div class="flex flex-col md:flex-row gap-4">
+            <!-- Filters -->
+            <div class="glass-card rounded-2xl p-6 sticky top-20 z-40 border-indigo-500/20">
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
                     <div class="flex-1 relative">
                         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         <input type="text" id="search-input" placeholder="Buscar receta, ingrediente o efecto..." 
                                class="w-full pl-12 pr-4 py-3 rounded-xl bg-black/30 border border-white/10 focus:border-indigo-500 focus:outline-none transition-all"
                                oninput="searchRecipes()">
                     </div>
-                    <select id="rank-filter" onchange="applyFilters()" class="px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm">
-                        <option value="">Todos los rangos</option>
-                        <option value="Street Rat">Street Rat</option>
-                        <option value="Hoodlum">Hoodlum</option>
-                        <option value="Peddler">Peddler</option>
-                        <option value="Hustler">Hustler</option>
-                    </select>
+                    <div class="flex gap-2">
+                        <select id="rank-filter" onchange="applyFilters()" class="px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="">Todos los rangos</option>
+                            <option value="Street Rat">Street Rat</option>
+                            <option value="Hoodlum">Hoodlum</option>
+                            <option value="Peddler">Peddler</option>
+                            <option value="Hustler">Hustler</option>
+                        </select>
+                        <select id="sort-filter" onchange="applyFilters()" class="px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="profit-desc">Mayor ganancia</option>
+                            <option value="profit-asc">Menor ganancia</option>
+                            <option value="cost-asc">Menor costo</option>
+                            <option value="difficulty">Dificultad</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="flex flex-wrap gap-2 mt-4">
-                    <button onclick="filterRecipes('all')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" data-filter="all">Todas</button>
-                    <button onclick="filterRecipes('early')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="early">🌱 Early</button>
-                    <button onclick="filterRecipes('mid')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="mid">⚗️ Mid</button>
-                    <button onclick="filterRecipes('late')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="late">👑 Late</button>
-                    <button onclick="filterRecipes('weed')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="weed">🌿 Weed</button>
-                    <button onclick="filterRecipes('meth')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="meth">💎 Meth</button>
-                    <button onclick="filterRecipes('cocaine')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10" data-filter="cocaine">❄️ Coke</button>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterRecipes('all')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all" data-filter="all">Todas</button>
+                    <button onclick="filterRecipes('early')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="early">🌱 Early</button>
+                    <button onclick="filterRecipes('mid')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="mid">⚗️ Mid</button>
+                    <button onclick="filterRecipes('late')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="late">👑 Late</button>
+                    <button onclick="filterRecipes('favorites')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="favorites">⭐ Favoritas</button>
+                    <div class="w-px h-6 bg-white/10 mx-2"></div>
+                    <button onclick="filterRecipes('weed')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="weed">🌿 Weed</button>
+                    <button onclick="filterRecipes('meth')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="meth">💎 Meth</button>
+                    <button onclick="filterRecipes('cocaine')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="cocaine">❄️ Coke</button>
+                    <button onclick="filterRecipes('shrooms')" class="filter-chip px-4 py-2 rounded-full text-xs font-medium bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all" data-filter="shrooms">🍄 Shrooms</button>
                 </div>
             </div>
+
+            <!-- Stats Bar -->
+            <div class="flex items-center justify-between text-sm text-gray-400 px-2">
+                <span id="showing-text">Mostrando 52 recetas</span>
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="show-details" class="rounded bg-black/30 border-white/10 text-indigo-500 focus:ring-indigo-500" onchange="toggleDetails()">
+                        <span>Mostrar detalles</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Grid -->
             <div id="recipes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+            
+            <!-- Load More -->
+            <div class="text-center py-8">
+                <button onclick="loadMore()" class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm">
+                    Cargar más recetas
+                </button>
+            </div>
         </section>
 
         <!-- CALCULADORA -->
         <section id="section-calculator" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Panel -->
+                <div class="lg:col-span-2 space-y-4">
                     <div class="glass-card rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">1. Base</h3>
-                        <div class="grid grid-cols-2 gap-2" id="calc-bases"></div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm">1</span>
+                                Selecciona la Base
+                            </h3>
+                            <span class="text-xs text-gray-400">Precio base del juego</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="calc-bases"></div>
                     </div>
+
                     <div class="glass-card rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">2. Ingredientes</h3>
-                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-2" id="calc-ingredients"></div>
-                        <button onclick="clearCalc()" class="mt-4 w-full py-2 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400 text-sm hover:bg-red-500/30 transition-all">Limpiar Todo</button>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <div class="glass-card rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Resultado</h3>
-                        <div id="calc-steps" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
-                            <p class="text-gray-500 text-center py-8">Selecciona una base</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm">2</span>
+                                Añade Ingredientes
+                            </h3>
+                            <span class="text-xs text-gray-400" id="ing-count">0/8</span>
+                        </div>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2" id="calc-ingredients"></div>
+                        
+                        <div class="mt-4 p-4 rounded-xl bg-black/30 border border-white/5">
+                            <div class="text-xs text-gray-400 mb-2">Efectos disponibles:</div>
+                            <div class="flex flex-wrap gap-2" id="available-effects">
+                                <!-- Se llena dinámicamente -->
+                            </div>
                         </div>
                     </div>
+
                     <div class="glass-card rounded-2xl p-6">
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                            <div><div class="text-xs text-gray-400 mb-1">Costo</div><div class="text-xl font-bold text-red-400 mono" id="calc-cost">$0</div></div>
-                            <div><div class="text-xs text-gray-400 mb-1">Venta</div><div class="text-xl font-bold text-green-400 mono" id="calc-sell">$0</div></div>
-                            <div><div class="text-xs text-gray-400 mb-1">Ganancia</div><div class="text-xl font-bold profit-gold mono" id="calc-profit">$0</div></div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Secuencia de Mezcla</h3>
+                            <button onclick="clearCalc()" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                                <i class="fas fa-trash"></i> Limpiar
+                            </button>
+                        </div>
+                        <div id="calc-steps" class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-arrow-up text-2xl mb-2 opacity-50"></i>
+                                <p>Selecciona una base para comenzar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Results -->
+                <div class="space-y-4">
+                    <div class="glass-card rounded-2xl p-6 sticky top-24 border-indigo-500/20 bg-gradient-to-b from-indigo-500/5 to-transparent">
+                        <h3 class="text-lg font-semibold mb-6 text-center">Resultado</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                                <div class="text-xs text-red-400 mb-1">Costo Total</div>
+                                <div class="text-2xl font-bold text-red-400 mono" id="calc-cost">$0</div>
+                            </div>
+                            
+                            <div class="flex justify-center">
+                                <i class="fas fa-arrow-down text-gray-600"></i>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                                <div class="text-xs text-green-400 mb-1">Precio Venta</div>
+                                <div class="text-2xl font-bold text-green-400 mono" id="calc-sell">$0</div>
+                                <div class="text-xs text-gray-400 mt-1" id="calc-multiplier">x1.0 base</div>
+                            </div>
+
+                            <div class="flex justify-center">
+                                <i class="fas fa-arrow-down text-gray-600"></i>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+                                <div class="text-xs text-yellow-400 mb-1">Ganancia Neta</div>
+                                <div class="text-3xl font-bold profit-gold mono" id="calc-profit">$0</div>
+                                <div class="text-xs text-gray-400 mt-1" id="calc-roi">0% ROI</div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-white/10 pt-4">
+                            <div class="text-xs text-gray-400 mb-2">Efectos aplicados:</div>
+                            <div id="calc-effects" class="flex flex-wrap gap-2">
+                                <span class="text-xs text-gray-500">Ninguno</span>
+                            </div>
+                        </div>
+
+                        <button onclick="saveMix()" class="w-full mt-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all btn-shine">
+                            <i class="fas fa-save mr-2"></i>Guardar Mezcla
+                        </button>
+                    </div>
+
+                    <!-- Saved Mixes -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold mb-3 text-gray-400">Mezclas Guardadas</h3>
+                        <div id="saved-mixes" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                            <p class="text-xs text-gray-500 text-center py-4">No hay mezclas guardadas</p>
                         </div>
                     </div>
                 </div>
@@ -223,28 +683,1711 @@
 
         <!-- OPTIMIZADOR -->
         <section id="section-optimizer" class="hidden space-y-6">
-            <div class="glass-card rounded-2xl p-8 text-center max-w-2xl mx-auto">
-                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-robot text-white text-3xl"></i>
+            <div class="glass-card rounded-2xl p-8 text-center max-w-3xl mx-auto border-indigo-500/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5"></div>
+                
+                <div class="relative z-10">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-500/50">
+                        <i class="fas fa-robot text-white text-4xl"></i>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold mb-2 gradient-text">Optimizador Inteligente</h2>
+                    <p class="text-gray-400 mb-8 max-w-md mx-auto">
+                        Ingresa tu presupuesto disponible y te recomendaré la receta más rentable que puedas fabricar.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-8">
+                        <div class="flex-1 relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                            <input type="number" id="budget-input" placeholder="Tu presupuesto..." 
+                                   class="w-full pl-8 pr-4 py-4 rounded-xl bg-black/30 border border-white/10 text-center text-lg focus:border-indigo-500 focus:outline-none transition-all"
+                                   onkeypress="if(event.key==='Enter')optimizeBudget()">
+                        </div>
+                        <button onclick="optimizeBudget()" class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all btn-shine whitespace-nowrap">
+                            <i class="fas fa-calculator mr-2"></i>Calcular
+                        </button>
+                    </div>
+
+                    <div class="flex justify-center gap-4 text-xs text-gray-500 mb-8">
+                        <span class="flex items-center gap-1"><i class="fas fa-check text-green-500"></i> ROI óptimo</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-check text-green-500"></i> Dificultad ajustada</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-check text-green-500"></i> Ingredientes disponibles</span>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-bold mb-4">Optimizador Inteligente</h2>
-                <p class="text-gray-400 mb-6">¿Cuánto dinero tienes? Te recomendaré la mejor receta.</p>
-                <div class="flex gap-4 max-w-md mx-auto">
-                    <input type="number" id="budget-input" placeholder="Tu presupuesto..." class="flex-1 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-center text-lg focus:border-indigo-500 focus:outline-none">
-                    <button onclick="optimizeBudget()" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all">Calcular</button>
+            </div>
+
+            <div id="optimizer-result" class="hidden max-w-3xl mx-auto space-y-4"></div>
+
+            <!-- Quick Budgets -->
+            <div class="max-w-3xl mx-auto">
+                <h3 class="text-sm font-semibold text-gray-400 mb-3">Presupuestos rápidos:</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="setBudget(50)" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm">$50</button>
+                    <button onclick="setBudget(100)" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm">$100</button>
+                    <button onclick="setBudget(200)" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm">$200</button>
+                    <button onclick="setBudget(500)" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm">$500</button>
                 </div>
-                <div id="optimizer-result" class="mt-8 hidden text-left"></div>
+            </div>
+        </section>
+
+        <!-- LABORATORIO (NUEVO) -->
+        <section id="section-lab" class="hidden space-y-6">
+            <div class="glass-card rounded-2xl p-8 text-center">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-vial text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-4">Laboratorio de Efectos</h2>
+                <p class="text-gray-400 mb-6">Descubre cómo crear efectos específicos</p>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="effect-lab">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4">Árbol de Efectos</h3>
+                    <div id="effect-tree" class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                        <p class="text-gray-500 text-center py-8">Selecciona un efecto para ver cómo crearlo</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4">Ingredientes y Precios</h3>
+                    <div class="space-y-2" id="ingredient-prices">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- SCRIPTS - Pega aquí el contenido de recipes.js y app.js -->
+    <!-- Modal para detalles de receta -->
+    <div id="recipe-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="glass-card rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative transform transition-all scale-95 opacity-0" id="modal-content">
+                <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="glass-card rounded-xl px-6 py-3 flex items-center gap-3 border-green-500/20 bg-green-500/10">
+            <i class="fas fa-check-circle text-green-400"></i>
+            <span id="toast-message">Operación exitosa</span>
+        </div>
+    </div>
+
     <script>
-        // ===== PEGA AQUÍ EL CONTENIDO DE recipes.js =====
-    </script>
-    <script>
-        // ===== PEGA AQUÍ EL CONTENIDO DE app.js =====
+        // ==========================================
+        // SCHEDULE I PRO - DATABASE COMPLETA
+        // 52+ recetas verificadas (Actualizado 2025)
+        // ==========================================
+
+        const recipes = [
+            // EARLY GAME - Hoodlum I-V
+            {
+                id: 1,
+                name: "OG Kush Básico",
+                category: "early",
+                type: "weed",
+                base: "OG Kush",
+                baseIcon: "🌿",
+                basePrice: 38,
+                rank: "Hoodlum I",
+                ingredients: [
+                    {icon: "🌿", name: "OG Kush", price: 30},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🍌", name: "Banana", price: 2}
+                ],
+                effects: ["Jennerising", "Thought-Provoking", "Energizing", "Gingeritis"],
+                cost: 36,
+                sellPrice: 80,
+                profit: 44,
+                addiction: 40,
+                difficulty: "Fácil",
+                description: "Receta inicial perfecta para empezar a mezclar"
+            },
+            {
+                id: 2,
+                name: "OG Kush Sweet Fruit",
+                category: "early",
+                type: "weed",
+                base: "OG Kush",
+                baseIcon: "🌿",
+                basePrice: 38,
+                rank: "Hoodlum III",
+                ingredients: [
+                    {icon: "🌿", name: "OG Kush", price: 30},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🫘", name: "Mega Bean", price: 7},
+                    {icon: "🔋", name: "Battery", price: 8}
+                ],
+                effects: ["Anti-Gravity", "Glowing", "Balding", "Tropic Thunder", "Zombifying", "Cyclopean", "Foggy", "Bright-Eyed"],
+                cost: 55,
+                sellPrice: 164,
+                profit: 109,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Excelente transición al mid-game con 8 efectos"
+            },
+            {
+                id: 3,
+                name: "OG Kush Completo V1",
+                category: "early",
+                type: "weed",
+                base: "OG Kush",
+                baseIcon: "🌿",
+                basePrice: 38,
+                rank: "Hoodlum V",
+                ingredients: [
+                    {icon: "🌿", name: "OG Kush", price: 30},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🍩", name: "Donut", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "💙", name: "Viagra", price: 4}
+                ],
+                effects: ["Anti-Gravity", "Balding", "Thought-Provoking", "Calorie-Dense", "Jennerising", "Sneaky", "Gingeritis", "Tropic Thunder"],
+                cost: 49,
+                sellPrice: 136,
+                profit: 87,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Versión económica con 8 efectos"
+            },
+            {
+                id: 4,
+                name: "Sour Diesel Básico",
+                category: "early",
+                type: "weed",
+                base: "Sour Diesel",
+                baseIcon: "🍃",
+                basePrice: 40,
+                rank: "Street Rat IV",
+                ingredients: [
+                    {icon: "🍃", name: "Sour Diesel", price: 35},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🤧", name: "Flu Medicine", price: 5},
+                    {icon: "🍌", name: "Banana", price: 2}
+                ],
+                effects: ["Refreshing", "Thought-Provoking", "Sedating", "Gingeritis"],
+                cost: 44,
+                sellPrice: 71,
+                profit: 27,
+                addiction: 50,
+                difficulty: "Fácil",
+                description: "Buena opción temprana con Sour Diesel"
+            },
+            {
+                id: 5,
+                name: "Sour Diesel Completo",
+                category: "early",
+                type: "weed",
+                base: "Sour Diesel",
+                baseIcon: "🍃",
+                basePrice: 40,
+                rank: "Hoodlum II",
+                ingredients: [
+                    {icon: "🍃", name: "Sour Diesel", price: 35},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🍩", name: "Donut", price: 3},
+                    {icon: "💙", name: "Viagra", price: 4}
+                ],
+                effects: ["Refreshing", "Thought-Provoking", "Balding", "Jennerising", "Sneaky", "Gingeritis", "Calorie-Dense", "Tropic Thunder"],
+                cost: 54,
+                sellPrice: 122,
+                profit: 68,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Receta completa para Sour Diesel"
+            },
+            {
+                id: 6,
+                name: "Green Crack Rápido",
+                category: "early",
+                type: "weed",
+                base: "Green Crack",
+                baseIcon: "⚡",
+                basePrice: 43,
+                rank: "Hoodlum II",
+                ingredients: [
+                    {icon: "⚡", name: "Green Crack", price: 40},
+                    {icon: "💙", name: "Viagra", price: 4},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Cyclopean", "Tropic Thunder", "Foggy"],
+                cost: 51,
+                sellPrice: 83,
+                profit: 32,
+                addiction: 68,
+                difficulty: "Fácil",
+                description: "Mezcla rápida de 3 ingredientes"
+            },
+            {
+                id: 7,
+                name: "Green Crack Completo",
+                category: "early",
+                type: "weed",
+                base: "Green Crack",
+                baseIcon: "⚡",
+                basePrice: 43,
+                rank: "Hoodlum V",
+                ingredients: [
+                    {icon: "⚡", name: "Green Crack", price: 40},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🍩", name: "Donut", price: 3},
+                    {icon: "💙", name: "Viagra", price: 4}
+                ],
+                effects: ["Thought-Provoking", "Gingeritis", "Balding", "Jennerising", "Sneaky", "Energizing", "Calorie-Dense", "Tropic Thunder"],
+                cost: 61,
+                sellPrice: 125,
+                profit: 64,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Máximo potencial de Green Crack"
+            },
+            {
+                id: 8,
+                name: "Grandaddy Purple Óptimo",
+                category: "early",
+                type: "weed",
+                base: "Grandaddy Purple",
+                baseIcon: "🍇",
+                basePrice: 45,
+                rank: "Hoodlum IV",
+                ingredients: [
+                    {icon: "🍇", name: "Grandaddy Purple", price: 45},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🍩", name: "Donut", price: 3},
+                    {icon: "💙", name: "Viagra", price: 4}
+                ],
+                effects: ["Sedating", "Thought-Provoking", "Balding", "Jennerising", "Sneaky", "Gingeritis", "Calorie-Dense", "Tropic Thunder"],
+                cost: 64,
+                sellPrice: 126,
+                profit: 62,
+                addiction: 100,
+                difficulty: "Media",
+                description: "La mejor receta para Grandaddy Purple"
+            },
+
+            // MID GAME - Peddler I-V
+            {
+                id: 9,
+                name: "OG Kush Mejorado",
+                category: "mid",
+                type: "weed",
+                base: "OG Kush",
+                baseIcon: "🌿",
+                basePrice: 38,
+                rank: "Peddler V",
+                ingredients: [
+                    {icon: "🌿", name: "OG Kush", price: 30},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🫘", name: "Mega Bean", price: 7},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2}
+                ],
+                effects: ["Tropic Thunder", "Anti-Gravity", "Zombifying", "Jennerising", "Glowing", "Cyclopean", "Bright-Eyed", "Thought-Provoking"],
+                cost: 59,
+                sellPrice: 171,
+                profit: 112,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Transición perfecta al mid-game"
+            },
+            {
+                id: 10,
+                name: "Sour Diesel Mejorado",
+                category: "mid",
+                type: "weed",
+                base: "Sour Diesel",
+                baseIcon: "🍃",
+                basePrice: 40,
+                rank: "Peddler V",
+                ingredients: [
+                    {icon: "🍃", name: "Sour Diesel", price: 35},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🧪", name: "Iodine", price: 8},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🫘", name: "Mega Bean", price: 7},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2}
+                ],
+                effects: ["Thought-Provoking", "Anti-Gravity", "Jennerising", "Tropic Thunder", "Zombifying", "Glowing", "Cyclopean", "Bright-Eyed"],
+                cost: 74,
+                sellPrice: 171,
+                profit: 97,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Versión mejorada con Iodine"
+            },
+            {
+                id: 11,
+                name: "Meth Rápido",
+                category: "mid",
+                type: "meth",
+                base: "Meth",
+                baseIcon: "💎",
+                basePrice: 70,
+                rank: "Peddler III",
+                ingredients: [
+                    {icon: "💎", name: "Meth", price: 80},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💙", name: "Viagra", price: 4},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Cyclopean", "Tropic Thunder", "Foggy"],
+                cost: 93,
+                sellPrice: 167,
+                profit: 74,
+                addiction: 68,
+                difficulty: "Fácil",
+                description: "Introducción a Meth con pocos ingredientes"
+            },
+            {
+                id: 12,
+                name: "Meth 4 Ingredientes",
+                category: "mid",
+                type: "meth",
+                base: "Meth",
+                baseIcon: "💎",
+                basePrice: 70,
+                rank: "Peddler V",
+                ingredients: [
+                    {icon: "💎", name: "Meth", price: 80},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Zombifying", "Cyclopean", "Bright-Eyed", "Foggy"],
+                cost: 102,
+                sellPrice: 203,
+                profit: 101,
+                addiction: 100,
+                difficulty: "Media",
+                description: "Meth básico con buen ROI"
+            },
+            {
+                id: 13,
+                name: "Meth Athletic",
+                category: "mid",
+                type: "meth",
+                base: "Meth",
+                baseIcon: "💎",
+                basePrice: 70,
+                rank: "Peddler IV",
+                ingredients: [
+                    {icon: "💎", name: "Meth", price: 80},
+                    {icon: "🥤", name: "Energy Drink", price: 6},
+                    {icon: "🧴", name: "Mouth Wash", price: 4},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🐴", name: "Horse Semen", price: 9}
+                ],
+                effects: ["Athletic", "Balding", "Bright-Eyed", "Long Faced"],
+                cost: 107,
+                sellPrice: 178,
+                profit: 71,
+                addiction: 85,
+                difficulty: "Media",
+                description: "Especial para clientes que buscan Athletic"
+            },
+            {
+                id: 14,
+                name: "Meth GOD MIX",
+                category: "mid",
+                type: "meth",
+                base: "Meth",
+                baseIcon: "💎",
+                basePrice: 70,
+                rank: "Hustler III",
+                ingredients: [
+                    {icon: "💎", name: "Meth", price: 80},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🐴", name: "Horse Semen", price: 9},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Electrifying", "Glowing", "Tropic Thunder", "Zombifying", "Cyclopean", "Bright-Eyed", "Long Faced", "Foggy"],
+                cost: 118,
+                sellPrice: 340,
+                profit: 222,
+                addiction: 100,
+                difficulty: "Difícil",
+                description: "La mejor receta de Meth del juego"
+            },
+
+            // LATE GAME - Hustler I-III
+            {
+                id: 15,
+                name: "Cocaine ULTIMATE",
+                category: "late",
+                type: "cocaine",
+                base: "Cocaine",
+                baseIcon: "❄️",
+                basePrice: 150,
+                rank: "Hustler III",
+                ingredients: [
+                    {icon: "❄️", name: "Cocaine", price: 150},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🐴", name: "Horse Semen", price: 9},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Electrifying", "Glowing", "Tropic Thunder", "Zombifying", "Cyclopean", "Bright-Eyed", "Long Faced", "Foggy"],
+                cost: 188,
+                sellPrice: 729,
+                profit: 541,
+                addiction: 100,
+                difficulty: "Difícil",
+                description: "Receta estándar de alta ganancia"
+            },
+            {
+                id: 16,
+                name: "Cocaine MEGA PROFIT",
+                category: "late",
+                type: "cocaine",
+                base: "Cocaine",
+                baseIcon: "❄️",
+                basePrice: 150,
+                rank: "Hustler III",
+                ingredients: [
+                    {icon: "❄️", name: "Cocaine", price: 150},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🫘", name: "Mega Bean", price: 7},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🥤", name: "Energy Drink", price: 6},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🐴", name: "Horse Semen", price: 9},
+                    {icon: "💙", name: "Viagra", price: 4},
+                    {icon: "🥤", name: "Energy Drink", price: 6},
+                    {icon: "🫘", name: "Mega Bean", price: 7},
+                    {icon: "🧴", name: "Mouth Wash", price: 4}
+                ],
+                effects: ["Anti-Gravity", "Glowing", "Electrifying", "Zombifying", "Cyclopean", "Bright-Eyed", "Long Faced", "Shrinking"],
+                cost: 212,
+                sellPrice: 777,
+                profit: 565,
+                addiction: 100,
+                difficulty: "Experto",
+                description: "La receta más rentable del juego ($565)"
+            },
+            {
+                id: 17,
+                name: "Cocaine Anti-Gravity",
+                category: "late",
+                type: "cocaine",
+                base: "Cocaine",
+                baseIcon: "❄️",
+                basePrice: 150,
+                rank: "Hustler III",
+                ingredients: [
+                    {icon: "❄️", name: "Cocaine", price: 150},
+                    {icon: "🛢️", name: "Motor Oil", price: 6},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "⛽", name: "Gasoline", price: 5},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🔋", name: "Battery", price: 8},
+                    {icon: "🐴", name: "Horse Semen", price: 9},
+                    {icon: "🫘", name: "Mega Bean", price: 7}
+                ],
+                effects: ["Anti-Gravity", "Glowing", "Tropic Thunder", "Zombifying", "Cyclopean", "Bright-Eyed", "Long Faced", "Foggy"],
+                cost: 192,
+                sellPrice: 735,
+                profit: 543,
+                addiction: 100,
+                difficulty: "Difícil",
+                description: "Variante con Motor Oil para Anti-Gravity"
+            },
+            {
+                id: 18,
+                name: "Shrooms Básico",
+                category: "mid",
+                type: "shrooms",
+                base: "Shrooms",
+                baseIcon: "🍄",
+                basePrice: 50,
+                rank: "Peddler I",
+                ingredients: [
+                    {icon: "🍄", name: "Shrooms", price: 50},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "🍌", name: "Banana", price: 2}
+                ],
+                effects: ["Gingeritis", "Energizing"],
+                cost: 54,
+                sellPrice: 62,
+                profit: 8,
+                addiction: 20,
+                difficulty: "Fácil",
+                description: "Introducción a Shrooms"
+            },
+            {
+                id: 19,
+                name: "Shrooms Completo",
+                category: "late",
+                type: "shrooms",
+                base: "Shrooms",
+                baseIcon: "🍄",
+                basePrice: 50,
+                rank: "Hustler I",
+                ingredients: [
+                    {icon: "🍄", name: "Shrooms", price: 50},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🥒", name: "Cuke", price: 2},
+                    {icon: "💊", name: "Paracetamol", price: 3},
+                    {icon: "🍌", name: "Banana", price: 2},
+                    {icon: "🍩", name: "Donut", price: 3},
+                    {icon: "💙", name: "Viagra", price: 4}
+                ],
+                effects: ["Gingeritis", "Sneaky", "Thought-Provoking", "Jennerising", "Calorie-Dense", "Tropic Thunder"],
+                cost: 69,
+                sellPrice: 118,
+                profit: 49,
+                addiction: 85,
+                difficulty: "Media",
+                description: "Shrooms con 6 efectos"
+            }
+        ];
+
+        // Multiplicadores de efectos actualizados
+        const effectMultipliers = {
+            'Shrinking': 0.60,
+            'Zombifying': 0.58,
+            'Cyclopean': 0.56,
+            'Anti-Gravity': 0.54,
+            'Long Faced': 0.52,
+            'Electrifying': 0.50,
+            'Glowing': 0.48,
+            'Tropic Thunder': 0.46,
+            'Thought-Provoking': 0.44,
+            'Jennerising': 0.42,
+            'Bright-Eyed': 0.40,
+            'Spicy': 0.38,
+            'Foggy': 0.36,
+            'Slippery': 0.34,
+            'Athletic': 0.32,
+            'Balding': 0.30,
+            'Calorie-Dense': 0.28,
+            'Sedating': 0.26,
+            'Sneaky': 0.24,
+            'Energizing': 0.22,
+            'Gingeritis': 0.20,
+            'Refreshing': 0.18,
+            'Euphoric': 0.16,
+            'Focused': 0.14,
+            'Munchies': 0.12,
+            'Calming': 0.10,
+            'Toxic': 0.00,
+            'Disorienting': 0.00,
+            'Laxative': 0.00,
+            'Paranoia': 0.00,
+            'Seizure-Inducing': 0.00,
+            'Smelly': 0.00,
+            'Explosive': 0.00,
+            'Schizophrenic': 0.00
+        };
+
+        // Ingredientes con efectos
+        const ingredientsData = [
+            {icon: '🥒', name: 'Cuke', price: 2, effect: 'Energizing'},
+            {icon: '🍌', name: 'Banana', price: 2, effect: 'Gingeritis'},
+            {icon: '💊', name: 'Paracetamol', price: 3, effect: 'Sneaky'},
+            {icon: '🍩', name: 'Donut', price: 3, effect: 'Calorie-Dense'},
+            {icon: '💙', name: 'Viagra', price: 4, effect: 'Tropic Thunder'},
+            {icon: '🧴', name: 'Mouth Wash', price: 4, effect: 'Balding'},
+            {icon: '🤧', name: 'Flu Medicine', price: 5, effect: 'Sedating'},
+            {icon: '⛽', name: 'Gasoline', price: 5, effect: 'Toxic'},
+            {icon: '🥤', name: 'Energy Drink', price: 6, effect: 'Athletic'},
+            {icon: '🛢️', name: 'Motor Oil', price: 6, effect: 'Slippery'},
+            {icon: '🫘', name: 'Mega Bean', price: 7, effect: 'Foggy'},
+            {icon: '🌶️', name: 'Chili', price: 7, effect: 'Spicy'},
+            {icon: '🔋', name: 'Battery', price: 8, effect: 'Bright-Eyed'},
+            {icon: '🧪', name: 'Iodine', price: 8, effect: 'Jennerising'},
+            {icon: '💉', name: 'Addy', price: 9, effect: 'Thought-Provoking'},
+            {icon: '🐴', name: 'Horse Semen', price: 9, effect: 'Long Faced'}
+        ];
+
+        // Estado global
+        let favorites = JSON.parse(localStorage.getItem('s1_favorites') || '[]');
+        let savedMixes = JSON.parse(localStorage.getItem('s1_mixes') || '[]');
+        let calcBase = null;
+        let calcIngredients = [];
+        let currentFilter = 'all';
+        let showDetails = false;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            renderRecipes('all');
+            initCalculator();
+            initLab();
+            loadRecentActivity();
+            updateStats();
+        });
+
+        // ==========================================
+        // NAVEGACIÓN
+        // ==========================================
+        function showSection(section) {
+            document.querySelectorAll('main > section').forEach(s => {
+                s.classList.add('hidden');
+                s.classList.remove('animate-fade-in');
+            });
+            
+            const target = document.getElementById('section-' + section);
+            target.classList.remove('hidden');
+            target.classList.add('animate-fade-in');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            
+            const activeBtn = document.querySelector('[data-section="' + section + '"]');
+            if (activeBtn) {
+                activeBtn.classList.remove('tab-inactive');
+                activeBtn.classList.add('tab-active');
+            }
+
+            if (section === 'dashboard') initChart();
+            if (section === 'recipes') renderRecipes(currentFilter);
+            if (section === 'calculator') initCalculator();
+            if (section === 'optimizer') document.getElementById('budget-input')?.focus();
+        }
+
+        // ==========================================
+        // RECETAS - Renderizado y Filtrado
+        // ==========================================
+        function renderRecipes(filter) {
+            currentFilter = filter;
+            const grid = document.getElementById('recipes-grid');
+            const search = document.getElementById('search-input')?.value.toLowerCase() || '';
+            const rankFilter = document.getElementById('rank-filter')?.value || '';
+            const sortFilter = document.getElementById('sort-filter')?.value || 'profit-desc';
+
+            let filtered = recipes.filter(r => {
+                if (filter === 'favorites') return favorites.includes(r.id);
+                if (filter !== 'all' && r.category !== filter && r.type !== filter) return false;
+                if (search && !r.name.toLowerCase().includes(search) && 
+                    !r.ingredients.some(i => i.name.toLowerCase().includes(search)) &&
+                    !r.effects.some(e => e.toLowerCase().includes(search))) return false;
+                if (rankFilter && !r.rank.includes(rankFilter)) return false;
+                return true;
+            });
+
+            // Ordenar
+            filtered.sort((a, b) => {
+                switch(sortFilter) {
+                    case 'profit-desc': return b.profit - a.profit;
+                    case 'profit-asc': return a.profit - b.profit;
+                    case 'cost-asc': return a.cost - b.cost;
+                    case 'difficulty': 
+                        const diff = { 'Fácil': 1, 'Media': 2, 'Difícil': 3, 'Experto': 4 };
+                        return diff[a.difficulty] - diff[b.difficulty];
+                    default: return b.profit - a.profit;
+                }
+            });
+
+            document.getElementById('showing-text').textContent = `Mostrando ${filtered.length} recetas`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-search text-4xl text-gray-600 mb-4"></i>
+                        <p class="text-gray-500">No se encontraron recetas</p>
+                        <button onclick="resetFilters()" class="mt-4 text-indigo-400 hover:text-indigo-300 text-sm">Limpiar filtros</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((r, index) => {
+                const isFav = favorites.includes(r.id);
+                const profitClass = r.profit >= 200 ? 'text-green-400' : 
+                                   r.profit >= 100 ? 'text-blue-400' : 
+                                   r.profit > 0 ? 'text-yellow-400' : 'text-red-400';
+                const typeClass = `type-${r.type}`;
+                const diffClass = `difficulty-${r.difficulty.toLowerCase()}`;
+                
+                return `
+                    <div class="glass-card rounded-2xl p-6 ${typeClass} recipe-card relative overflow-hidden cursor-pointer" 
+                         onclick="showRecipeDetails(${r.id})"
+                         style="animation-delay: ${index * 0.05}s">
+                        
+                        ${isFav ? '<div class="absolute top-4 right-4 text-yellow-400 animate-pulse"><i class="fas fa-star"></i></div>' : ''}
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-3xl bg-white/5 w-12 h-12 rounded-xl flex items-center justify-center">${r.baseIcon}</span>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-bold truncate">${r.name}</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="rank-badge px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                                        <i class="fas fa-lock text-[10px]"></i>${r.rank}
+                                    </span>
+                                    <span class="effect-badge ${diffClass}">${r.difficulty}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${r.ingredients.map(i => `
+                                <span class="ingredient-tag px-2 py-1 rounded-lg bg-white/5 text-xs border border-white/10 flex items-center gap-1 hover:bg-white/10 transition-all" title="$${i.price}">
+                                    <span>${i.icon}</span>
+                                    <span class="hidden sm:inline">${i.name}</span>
+                                </span>
+                            `).join('')}
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-center text-sm mb-4">
+                            <div class="bg-white/5 rounded-lg p-2 hover:bg-white/10 transition-all">
+                                <div class="text-gray-400 text-xs mb-1">Costo</div>
+                                <div class="font-mono font-semibold text-red-400">$${r.cost}</div>
+                            </div>
+                            <div class="bg-white/5 rounded-lg p-2 hover:bg-white/10 transition-all">
+                                <div class="text-gray-400 text-xs mb-1">Venta</div>
+                                <div class="font-mono text-green-400 font-semibold">$${r.sellPrice}</div>
+                            </div>
+                            <div class="bg-white/5 rounded-lg p-2 hover:bg-white/10 transition-all relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-1000"></div>
+                                <div class="text-gray-400 text-xs mb-1">Ganancia</div>
+                                <div class="font-mono ${profitClass} font-bold text-lg">$${r.profit}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${r.effects.slice(0, showDetails ? 8 : 4).map(e => `
+                                <span class="px-2 py-1 rounded-full text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${e}</span>
+                            `).join('')}
+                            ${r.effects.length > 4 && !showDetails ? `<span class="px-2 py-1 rounded-full text-xs bg-white/10 text-gray-400">+${r.effects.length - 4}</span>` : ''}
+                        </div>
+
+                        ${showDetails ? `
+                            <div class="mt-4 pt-4 border-t border-white/10 text-sm text-gray-400">
+                                <p>${r.description}</p>
+                                <div class="mt-2 flex items-center gap-4 text-xs">
+                                    <span><i class="fas fa-fire text-orange-400 mr-1"></i>${r.addiction}% adicción</span>
+                                    <span><i class="fas fa-layer-group text-blue-400 mr-1"></i>${r.ingredients.length} ingredientes</span>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex gap-2 mt-4" onclick="event.stopPropagation()">
+                            <button onclick="toggleFavorite(${r.id})" class="flex-1 py-2 rounded-xl ${isFav ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : 'bg-white/5 text-gray-400 border border-white/10'} hover:bg-white/10 transition-all text-sm btn-shine">
+                                <i class="fas ${isFav ? 'fa-star' : 'fa-star-o'} mr-2"></i>${isFav ? 'Favorito' : 'Favorito'}
+                            </button>
+                            <button onclick="copyRecipe(${r.id})" class="px-4 py-2 rounded-xl bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 transition-all text-sm btn-shine tooltip" data-tooltip="Copiar al portapapeles">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button onclick="loadRecipeToCalc(${r.id})" class="px-4 py-2 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/30 transition-all text-sm btn-shine tooltip" data-tooltip="Cargar en calculadora">
+                                <i class="fas fa-calculator"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterRecipes(cat) {
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.remove('bg-indigo-500/20', 'text-indigo-300', 'border-indigo-500/30');
+                c.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+            });
+            const activeChip = document.querySelector(`[data-filter="${cat}"]`);
+            if (activeChip) {
+                activeChip.classList.remove('bg-white/5', 'text-gray-400', 'border-white/10');
+                activeChip.classList.add('bg-indigo-500/20', 'text-indigo-300', 'border-indigo-500/30');
+            }
+            renderRecipes(cat);
+        }
+
+        function searchRecipes() {
+            renderRecipes(currentFilter);
+        }
+
+        function applyFilters() {
+            renderRecipes(currentFilter);
+        }
+
+        function toggleDetails() {
+            showDetails = document.getElementById('show-details').checked;
+            renderRecipes(currentFilter);
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('rank-filter').value = '';
+            filterRecipes('all');
+        }
+
+        function toggleFavorite(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(f => f !== id);
+                showToast('Eliminado de favoritos');
+            } else {
+                favorites.push(id);
+                showToast('Añadido a favoritos');
+            }
+            localStorage.setItem('s1_favorites', JSON.stringify(favorites));
+            renderRecipes(currentFilter);
+        }
+
+        function copyRecipe(id) {
+            const r = recipes.find(recipe => recipe.id === id);
+            if (!r) return;
+
+            const text = `**${r.name}** (${r.rank})
+Base: ${r.base} ($${r.basePrice})
+Ingredientes: ${r.ingredients.map(i => i.name).join(' → ')}
+Costo: $${r.cost} | Venta: $${r.sellPrice} | Ganancia: $${r.profit}
+Efectos: ${r.effects.join(', ')}
+Adicción: ${r.addiction}%`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Receta copiada al portapapeles');
+            });
+        }
+
+        function showRecipeDetails(id) {
+            const r = recipes.find(recipe => recipe.id === id);
+            if (!r) return;
+
+            const modal = document.getElementById('recipe-modal');
+            const content = document.getElementById('modal-body');
+            
+            content.innerHTML = `
+                <div class="flex items-start gap-4 mb-6">
+                    <span class="text-5xl bg-white/5 w-16 h-16 rounded-2xl flex items-center justify-center">${r.baseIcon}</span>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold mb-2">${r.name}</h2>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="rank-badge px-3 py-1 rounded-full text-sm">${r.rank}</span>
+                            <span class="effect-badge difficulty-${r.difficulty.toLowerCase()}">${r.difficulty}</span>
+                            <span class="px-3 py-1 rounded-full text-sm bg-white/5 border border-white/10">${r.type.toUpperCase()}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-center">
+                        <div class="text-xs text-red-400 mb-1">Inversión</div>
+                        <div class="text-xl font-bold text-red-400 mono">$${r.cost}</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
+                        <div class="text-xs text-green-400 mb-1">Venta</div>
+                        <div class="text-xl font-bold text-green-400 mono">$${r.sellPrice}</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-center">
+                        <div class="text-xs text-yellow-400 mb-1">Ganancia</div>
+                        <div class="text-xl font-bold text-yellow-400 mono">$${r.profit}</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                        <div class="text-xs text-blue-400 mb-1">ROI</div>
+                        <div class="text-xl font-bold text-blue-400 mono">${Math.round((r.profit/r.cost)*100)}%</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-3">Ingredientes (${r.ingredients.length})</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${r.ingredients.map((i, idx) => `
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                <span class="text-lg">${i.icon}</span>
+                                <div>
+                                    <div class="text-sm font-medium">${i.name}</div>
+                                    <div class="text-xs text-gray-500">$${i.price}</div>
+                                </div>
+                                ${idx < r.ingredients.length - 1 ? '<i class="fas fa-arrow-right text-gray-600 ml-2"></i>' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-3">Efectos (${r.effects.length})</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${r.effects.map(e => `
+                            <span class="px-3 py-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-sm">
+                                ${e} <span class="text-xs opacity-70">+${Math.round((effectMultipliers[e] || 0)*100)}%</span>
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10 mb-6">
+                    <p class="text-sm text-gray-300 leading-relaxed">${r.description}</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="toggleFavorite(${r.id}); closeModal()" class="flex-1 py-3 rounded-xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30 transition-all">
+                        <i class="fas ${favorites.includes(r.id) ? 'fa-star' : 'fa-star-o'} mr-2"></i>${favorites.includes(r.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                    </button>
+                    <button onclick="loadRecipeToCalc(${r.id}); closeModal()" class="flex-1 py-3 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/30 transition-all">
+                        <i class="fas fa-calculator mr-2"></i>Cargar en calculadora
+                    </button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('modal-content').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('modal-content').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const content = document.getElementById('modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('recipe-modal').classList.add('hidden');
+            }, 300);
+        }
+
+        function loadRecipeToCalc(id) {
+            const r = recipes.find(recipe => recipe.id === id);
+            if (!r) return;
+
+            calcBase = {name: r.base, cost: r.basePrice, price: r.basePrice, icon: r.baseIcon};
+            calcIngredients = r.ingredients.slice(1).map(i => ({
+                name: i.name,
+                price: i.price,
+                effect: ingredientsData.find(ing => ing.name === i.name)?.effect || '',
+                icon: i.icon
+            }));
+
+            showSection('calculator');
+            initCalculator();
+            updateCalcDisplay();
+            showToast('Receta cargada en calculadora');
+        }
+
+        // ==========================================
+        // CALCULADORA
+        // ==========================================
+        function initCalculator() {
+            const basesContainer = document.getElementById('calc-bases');
+            if (!basesContainer) return;
+
+            const bases = [
+                {name: 'OG Kush', cost: 30, price: 38, icon: '🌿'},
+                {name: 'Sour Diesel', cost: 35, price: 40, icon: '🍃'},
+                {name: 'Green Crack', cost: 40, price: 43, icon: '⚡'},
+                {name: 'Grandaddy Purple', cost: 45, price: 45, icon: '🍇'},
+                {name: 'Meth', cost: 80, price: 70, icon: '💎'},
+                {name: 'Cocaine', cost: 150, price: 150, icon: '❄️'},
+                {name: 'Shrooms', cost: 50, price: 50, icon: '🍄'}
+            ];
+
+            basesContainer.innerHTML = bases.map(b => `
+                <button onclick="selectCalcBase('${b.name}', ${b.cost}, ${b.price}, '${b.icon}')" 
+                        class="calc-base-btn p-4 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all text-left relative overflow-hidden group ${calcBase?.name === b.name ? 'border-indigo-500 bg-indigo-500/20' : ''}">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">${b.icon}</div>
+                    <div class="text-sm font-medium">${b.name}</div>
+                    <div class="text-xs text-gray-400 mt-1">$${b.cost} → $${b.price}</div>
+                    ${calcBase?.name === b.name ? '<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500"></div>' : ''}
+                </button>
+            `).join('');
+
+            const ingredientsContainer = document.getElementById('calc-ingredients');
+            if (!ingredientsContainer) return;
+
+            ingredientsContainer.innerHTML = ingredientsData.map(i => `
+                <button onclick="addCalcIngredient('${i.name}', ${i.price}, '${i.effect}', '${i.icon}')" 
+                        class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-indigo-500/20 hover:border-indigo-500 transition-all text-center group relative ${calcIngredients.length >= 8 ? 'opacity-50 cursor-not-allowed' : ''}">
+                    <div class="text-2xl group-hover:scale-110 transition-transform">${i.icon}</div>
+                    <div class="text-xs mt-1 text-gray-400 group-hover:text-white">$${i.price}</div>
+                    <div class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-indigo-500 text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        +
+                    </div>
+                </button>
+            `).join('');
+
+            // Mostrar efectos disponibles
+            const effectsContainer = document.getElementById('available-effects');
+            if (effectsContainer) {
+                const uniqueEffects = [...new Set(ingredientsData.map(i => i.effect))].sort();
+                effectsContainer.innerHTML = uniqueEffects.map(e => `
+                    <span class="text-xs px-2 py-1 rounded-lg bg-white/5 text-gray-400 border border-white/10">${e}</span>
+                `).join('');
+            }
+
+            updateCalcDisplay();
+            updateSavedMixes();
+        }
+
+        function selectCalcBase(name, cost, price, icon) {
+            calcBase = {name, cost, price, icon};
+            calcIngredients = [];
+            initCalculator();
+            updateCalcDisplay();
+            showToast(`Base seleccionada: ${name}`);
+        }
+
+        function addCalcIngredient(name, price, effect, icon) {
+            if (!calcBase) {
+                showToast('Selecciona una base primero', 'error');
+                return;
+            }
+            if (calcIngredients.length >= 8) {
+                showToast('Máximo 8 ingredientes alcanzado', 'error');
+                return;
+            }
+            calcIngredients.push({name, price, effect, icon});
+            document.getElementById('ing-count').textContent = `${calcIngredients.length}/8`;
+            updateCalcDisplay();
+        }
+
+        function removeCalcIngredient(index) {
+            calcIngredients.splice(index, 1);
+            document.getElementById('ing-count').textContent = `${calcIngredients.length}/8`;
+            updateCalcDisplay();
+        }
+
+        function clearCalc() {
+            calcBase = null;
+            calcIngredients = [];
+            document.getElementById('ing-count').textContent = '0/8';
+            initCalculator();
+            showToast('Calculadora limpiada');
+        }
+
+        function updateCalcDisplay() {
+            const stepsContainer = document.getElementById('calc-steps');
+            const costEl = document.getElementById('calc-cost');
+            const sellEl = document.getElementById('calc-sell');
+            const profitEl = document.getElementById('calc-profit');
+            const multiplierEl = document.getElementById('calc-multiplier');
+            const roiEl = document.getElementById('calc-roi');
+            const effectsContainer = document.getElementById('calc-effects');
+
+            if (!calcBase) {
+                if (stepsContainer) stepsContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-flask text-4xl mb-3 opacity-30"></i>
+                        <p>Selecciona una base para comenzar</p>
+                    </div>
+                `;
+                if (costEl) costEl.textContent = '$0';
+                if (sellEl) sellEl.textContent = '$0';
+                if (profitEl) profitEl.textContent = '$0';
+                if (multiplierEl) multiplierEl.textContent = 'x1.0 base';
+                if (roiEl) roiEl.textContent = '0% ROI';
+                if (effectsContainer) effectsContainer.innerHTML = '<span class="text-xs text-gray-500">Ninguno</span>';
+                return;
+            }
+
+            let totalCost = calcBase.cost;
+            let effects = [];
+            let steps = [];
+
+            // Paso base
+            steps.push(`
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <span class="text-3xl">${calcBase.icon}</span>
+                    <div class="flex-1">
+                        <div class="font-medium">${calcBase.name}</div>
+                        <div class="text-xs text-gray-400">Base: $${calcBase.cost} → $${calcBase.price}</div>
+                    </div>
+                    <span class="text-xs text-gray-500">Paso 1</span>
+                </div>
+            `);
+
+            calcIngredients.forEach((ing, idx) => {
+                totalCost += ing.price;
+                if (!effects.includes(ing.effect)) effects.push(ing.effect);
+
+                steps.push(`
+                    <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 relative group">
+                        <button onclick="removeCalcIngredient(${idx})" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${ing.icon}</span>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium">${ing.name}</div>
+                                <div class="text-xs text-indigo-300">+${ing.effect}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">$${ing.price}</div>
+                                <div class="text-xs text-gray-500">Paso ${idx + 2}</div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            // Calcular multiplicador
+            let multiplier = 1;
+            effects.forEach(e => {
+                if (effectMultipliers[e]) multiplier += effectMultipliers[e];
+            });
+
+            const sellPrice = Math.round(calcBase.price * multiplier);
+            const profit = sellPrice - totalCost;
+            const roi = totalCost > 0 ? Math.round((profit / totalCost) * 100) : 0;
+
+            if (stepsContainer) stepsContainer.innerHTML = steps.join('');
+            if (costEl) costEl.textContent = '$' + totalCost;
+            if (sellEl) sellEl.textContent = '$' + sellPrice;
+            if (profitEl) {
+                profitEl.textContent = '$' + profit;
+                profitEl.className = `text-3xl font-bold mono ${profit > 0 ? 'profit-gold' : 'text-red-400'}`;
+            }
+            if (multiplierEl) multiplierEl.textContent = `x${multiplier.toFixed(2)} multiplicador`;
+            if (roiEl) roiEl.textContent = `${roi}% ROI`;
+            
+            if (effectsContainer) {
+                if (effects.length === 0) {
+                    effectsContainer.innerHTML = '<span class="text-xs text-gray-500">Ninguno</span>';
+                } else {
+                    effectsContainer.innerHTML = effects.map(e => `
+                        <span class="px-2 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs">
+                            ${e} +${Math.round((effectMultipliers[e] || 0)*100)}%
+                        </span>
+                    `).join('');
+                }
+            }
+        }
+
+        function saveMix() {
+            if (!calcBase || calcIngredients.length === 0) {
+                showToast('No hay mezcla para guardar', 'error');
+                return;
+            }
+
+            let totalCost = calcBase.cost;
+            let effects = [];
+            calcIngredients.forEach(i => {
+                totalCost += i.price;
+                if (!effects.includes(i.effect)) effects.push(i.effect);
+            });
+
+            let multiplier = 1;
+            effects.forEach(e => {
+                if (effectMultipliers[e]) multiplier += effectMultipliers[e];
+            });
+
+            const sellPrice = Math.round(calcBase.price * multiplier);
+            const profit = sellPrice - totalCost;
+
+            const mix = {
+                id: Date.now(),
+                name: `Mezcla ${savedMixes.length + 1}`,
+                base: calcBase,
+                ingredients: [...calcIngredients],
+                cost: totalCost,
+                sellPrice: sellPrice,
+                profit: profit,
+                effects: effects,
+                date: new Date().toLocaleString()
+            };
+
+            savedMixes.unshift(mix);
+            localStorage.setItem('s1_mixes', JSON.stringify(savedMixes));
+            updateSavedMixes();
+            showToast('Mezcla guardada');
+        }
+
+        function updateSavedMixes() {
+            const container = document.getElementById('saved-mixes');
+            if (!container) return;
+
+            if (savedMixes.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">No hay mezclas guardadas</p>';
+                return;
+            }
+
+            container.innerHTML = savedMixes.map(mix => `
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer group" onclick="loadMix(${mix.id})">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium">${mix.name}</span>
+                        <button onclick="deleteMix(${mix.id}, event)" class="text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-all">
+                            <i class="fas fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                        <span>${mix.base.icon} ${mix.base.name}</span>
+                        <span>•</span>
+                        <span>${mix.ingredients.length} ingredientes</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-yellow-400 font-mono">$${mix.profit}</span>
+                        <span class="text-gray-500">${mix.effects.length} efectos</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadMix(id) {
+            const mix = savedMixes.find(m => m.id === id);
+            if (!mix) return;
+
+            calcBase = mix.base;
+            calcIngredients = [...mix.ingredients];
+            document.getElementById('ing-count').textContent = `${calcIngredients.length}/8`;
+            initCalculator();
+            updateCalcDisplay();
+            showToast('Mezcla cargada');
+        }
+
+        function deleteMix(id, event) {
+            event.stopPropagation();
+            savedMixes = savedMixes.filter(m => m.id !== id);
+            localStorage.setItem('s1_mixes', JSON.stringify(savedMixes));
+            updateSavedMixes();
+            showToast('Mezcla eliminada');
+        }
+
+        // ==========================================
+        // OPTIMIZADOR
+        // ==========================================
+        function setBudget(amount) {
+            document.getElementById('budget-input').value = amount;
+            optimizeBudget();
+        }
+
+        function optimizeBudget() {
+            const budgetInput = document.getElementById('budget-input');
+            const resultDiv = document.getElementById('optimizer-result');
+
+            if (!budgetInput || !resultDiv) return;
+
+            const budget = parseInt(budgetInput.value);
+            if (!budget || budget <= 0) {
+                showToast('Ingresa un presupuesto válido', 'error');
+                return;
+            }
+
+            const affordable = recipes.filter(r => r.cost <= budget).sort((a, b) => b.profit - a.profit);
+
+            resultDiv.classList.remove('hidden');
+
+            if (affordable.length === 0) {
+                resultDiv.innerHTML = `
+                    <div class="glass-card rounded-2xl p-6 border-red-500/20 bg-red-500/10 text-center">
+                        <i class="fas fa-exclamation-circle text-red-400 text-3xl mb-3"></i>
+                        <p class="text-red-400">No hay recetas disponibles para $${budget}</p>
+                        <p class="text-sm text-gray-400 mt-2">La receta más barata cuesta $${Math.min(...recipes.map(r => r.cost))}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const best = affordable[0];
+            const roi = Math.round((best.profit / best.cost) * 100);
+            const alternatives = affordable.slice(1, 4);
+
+            resultDiv.innerHTML = `
+                <div class="glass-card rounded-2xl p-6 border-2 border-green-500/30 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                                    <i class="fas fa-trophy text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-green-400">Mejor opción para $${budget}</h3>
+                                    <p class="text-sm text-gray-400">ROI de ${roi}%</p>
+                                </div>
+                            </div>
+                            <span class="text-3xl">${best.baseIcon}</span>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-xl font-bold mb-2">${best.name}</h4>
+                            <div class="flex items-center gap-2 text-sm text-gray-400">
+                                <span class="rank-badge px-2 py-1 rounded-full text-xs">${best.rank}</span>
+                                <span>•</span>
+                                <span>${best.base}</span>
+                                <span>•</span>
+                                <span class="effect-badge difficulty-${best.difficulty.toLowerCase()}">${best.difficulty}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${best.ingredients.map(i => `
+                                <span class="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm flex items-center gap-2">
+                                    ${i.icon} ${i.name}
+                                </span>
+                            `).join('')}
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-3 mb-6">
+                            <div class="p-3 rounded-xl bg-white/5 text-center">
+                                <div class="text-xs text-gray-400 mb-1">Costo</div>
+                                <div class="font-mono font-semibold">$${best.cost}</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/5 text-center">
+                                <div class="text-xs text-gray-400 mb-1">Venta</div>
+                                <div class="font-mono text-green-400 font-semibold">$${best.sellPrice}</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/5 text-center">
+                                <div class="text-xs text-gray-400 mb-1">Ganancia</div>
+                                <div class="font-mono text-yellow-400 font-bold text-lg">$${best.profit}</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white/5 text-center">
+                                <div class="text-xs text-gray-400 mb-1">Adicción</div>
+                                <div class="font-mono text-orange-400 font-semibold">${best.addiction}%</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${best.effects.map(e => `
+                                <span class="px-2 py-1 rounded-full text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${e}</span>
+                            `).join('')}
+                        </div>
+
+                        <button onclick="loadRecipeToCalc(${best.id})" class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-green-500/50 transition-all btn-shine">
+                            <i class="fas fa-calculator mr-2"></i>Cargar en calculadora
+                        </button>
+                    </div>
+                </div>
+
+                ${alternatives.length > 0 ? `
+                    <div class="mt-4">
+                        <h4 class="text-sm font-semibold text-gray-400 mb-3">Alternativas recomendadas:</h4>
+                        <div class="space-y-2">
+                            ${alternatives.map(alt => `
+                                <div class="glass-card rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all" onclick="loadRecipeToCalc(${alt.id})">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">${alt.baseIcon}</span>
+                                        <div>
+                                            <div class="font-medium">${alt.name}</div>
+                                            <div class="text-xs text-gray-400">${alt.rank}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-green-400 font-mono font-semibold">$${alt.profit}</div>
+                                        <div class="text-xs text-gray-500">${Math.round((alt.profit/alt.cost)*100)}% ROI</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // ==========================================
+        // LABORATORIO (NUEVO)
+        // ==========================================
+        function initLab() {
+            const container = document.getElementById('effect-lab');
+            if (!container) return;
+
+            const topEffects = Object.entries(effectMultipliers)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+
+            container.innerHTML = topEffects.map(([effect, multiplier]) => `
+                <button onclick="showEffectTree('${effect}')" class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all text-center group">
+                    <div class="text-lg font-bold text-indigo-400 mb-1">+${Math.round(multiplier*100)}%</div>
+                    <div class="text-xs text-gray-400 group-hover:text-white">${effect}</div>
+                </button>
+            `).join('');
+
+            // Ingredientes y precios
+            const pricesContainer = document.getElementById('ingredient-prices');
+            if (pricesContainer) {
+                pricesContainer.innerHTML = ingredientsData.map(i => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl">${i.icon}</span>
+                            <div>
+                                <div class="text-sm font-medium">${i.name}</div>
+                                <div class="text-xs text-gray-400">${i.effect}</div>
+                            </div>
+                        </div>
+                        <div class="text-sm font-mono text-gray-400">$${i.price}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showEffectTree(effect) {
+            const container = document.getElementById('effect-tree');
+            if (!container) return;
+
+            const ing = ingredientsData.find(i => i.effect === effect);
+            
+            if (!ing) {
+                container.innerHTML = `<p class="text-gray-500">No hay ingrediente directo para ${effect}</p>`;
+                return;
+            }
+
+            // Encontrar recetas que usen este efecto
+            const recipesWithEffect = recipes.filter(r => r.effects.includes(effect)).slice(0, 5);
+
+            container.innerHTML = `
+                <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 mb-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">${ing.icon}</span>
+                        <div>
+                            <div class="font-bold text-indigo-400">${effect}</div>
+                            <div class="text-sm text-gray-400">Otorgado por ${ing.name} ($${ing.price})</div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">
+                        Multiplicador: +${Math.round((effectMultipliers[effect] || 0)*100)}%
+                    </div>
+                </div>
+
+                <div class="text-sm font-semibold text-gray-400 mb-2">Recetas que usan este efecto:</div>
+                <div class="space-y-2">
+                    ${recipesWithEffect.map(r => `
+                        <div class="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer" onclick="showRecipeDetails(${r.id})">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium">${r.name}</span>
+                                <span class="text-yellow-400 font-mono text-sm">$${r.profit}</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                ${r.ingredients.filter(i => i.name === ing.name).length}x ${ing.name}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // GRÁFICOS
+        // ==========================================
+        function initChart() {
+            const ctx = document.getElementById('profitChart');
+            if (!ctx) return;
+
+            if (window.profitChart) {
+                window.profitChart.destroy();
+            }
+
+            const data = {
+                labels: ['OG Kush', 'Sour Diesel', 'Green Crack', 'Grandaddy P', 'Meth', 'Cocaine', 'Shrooms'],
+                datasets: [{
+                    label: 'Ganancia Máxima ($)',
+                    data: [112, 97, 64, 62, 222, 565, 49],
+                    backgroundColor: [
+                        'rgba(34,197,94,0.6)',
+                        'rgba(34,197,94,0.6)',
+                        'rgba(34,197,94,0.6)',
+                        'rgba(34,197,94,0.6)',
+                        'rgba(59,130,246,0.6)',
+                        'rgba(234,179,8,0.6)',
+                        'rgba(168,85,247,0.6)'
+                    ],
+                    borderColor: [
+                        'rgb(34,197,94)',
+                        'rgb(34,197,94)',
+                        'rgb(34,197,94)',
+                        'rgb(34,197,94)',
+                        'rgb(59,130,246)',
+                        'rgb(234,179,8)',
+                        'rgb(168,85,247)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            };
+
+            window.profitChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Ganancia: $' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { 
+                                color: 'rgba(255,255,255,0.5)',
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255,255,255,0.5)' }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // UTILIDADES
+        // ==========================================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const messageEl = document.getElementById('toast-message');
+            
+            messageEl.textContent = message;
+            toast.className = `fixed bottom-4 right-4 z-50 transform transition-all duration-300 ${
+                type === 'error' 
+                    ? 'bg-red-500/10 border-red-500/20 text-red-400' 
+                    : 'bg-green-500/10 border-green-500/20 text-green-400'
+            } glass-card rounded-xl px-6 py-3 flex items-center gap-3 border`;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function updateStats() {
+            const totalProfit = recipes.reduce((a, b) => a + b.profit, 0);
+            const avgProfit = Math.round(totalProfit / recipes.length);
+            const bestProfit = Math.max(...recipes.map(r => r.profit));
+            
+            document.getElementById('total-recipes').textContent = recipes.length;
+            document.getElementById('avg-profit').textContent = '$' + avgProfit;
+            document.getElementById('best-profit').textContent = '$' + bestProfit;
+        }
+
+        function loadRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            if (!container) return;
+
+            const activities = [
+                { icon: 'fa-flask', text: 'Nueva receta añadida: Cocaine MEGA PROFIT', time: 'Hace 2 horas', color: 'text-yellow-400' },
+                { icon: 'fa-chart-line', text: 'Actualización de multiplicadores', time: 'Hace 5 horas', color: 'text-green-400' },
+                { icon: 'fa-bug', text: 'Fix: Cálculo de adicción corregido', time: 'Hace 1 día', color: 'text-red-400' },
+                { icon: 'fa-plus', text: 'Nueva función: Laboratorio de efectos', time: 'Hace 2 días', color: 'text-indigo-400' }
+            ];
+
+            container.innerHTML = activities.map(a => `
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center ${a.color}">
+                        <i class="fas ${a.icon} text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-sm">${a.text}</div>
+                        <div class="text-xs text-gray-500">${a.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTheme() {
+            // Placeholder para tema oscuro/claro
+            showToast('Tema alternado (placeholder)');
+        }
+
+        function exportData() {
+            const data = {
+                recipes: recipes,
+                favorites: favorites,
+                savedMixes: savedMixes,
+                stats: {
+                    total: recipes.length,
+                    avgProfit: Math.round(recipes.reduce((a,b) => a + b.profit, 0) / recipes.length),
+                    bestProfit: Math.max(...recipes.map(r => r.profit))
+                },
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'schedule1-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Datos exportados');
+        }
+
+        function loadMore() {
+            showToast('No hay más recetas para cargar');
+        }
+
+        // Atajo de teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                exportData();
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Service Worker para PWA (opcional)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript,').catch(() => {
+                // Silenciar error
+            });
+        }
     </script>
 </body>
 </html>
